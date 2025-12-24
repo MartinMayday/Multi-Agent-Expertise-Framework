@@ -1,0 +1,28 @@
+{
+  "name": "ai-launchpad",
+  "owner": {
+    "name": "Kenny Liao"
+  },
+  "plugins": [
+    {
+      "name": "yt-content-strategist",
+      "source": "./yt-content-strategist",
+      "description": "A plugin to research, ideate, and plan YouTube videos"
+    },
+    {
+      "name": "personal-assistant",
+      "source": "./personal-assistant",
+      "description": "A plugin to turn Claude Code into your personal assistant"
+    },
+    {
+      "name": "research",
+      "source": "./research",
+      "description": "A plugin to add research capabilities to Claude Code"
+    },
+    {
+      "name": "mcp-launchpad",
+      "source": "./mcp-launchpad",
+      "description": "MCP Launchpad - A unified CLI for discovering and managing MCP servers with automatic environment variable loading"
+    }
+  ]
+}

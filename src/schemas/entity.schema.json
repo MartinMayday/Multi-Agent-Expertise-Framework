@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Entity",
+  "description": "Named entity: name, type, value, description",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Entity name (e.g., hostname, function name)"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["url", "path", "function", "class", "server", "service", "other"],
+      "description": "Entity type"
+    },
+    "value": {
+      "type": "string",
+      "description": "Entity value"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description or context"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last verification timestamp"
+    }
+  },
+  "required": ["name", "type", "value"],
+  "additionalProperties": false
+}

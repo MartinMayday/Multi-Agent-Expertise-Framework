@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Profile",
+  "description": "Global user profile stored in ~/.expert-framework/",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique user identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "User's name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "User's email"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "User's timezone (e.g., 'America/New_York')"
+    },
+    "consent_flags": {
+      "type": "object",
+      "description": "Privacy and data handling flags",
+      "properties": {
+        "analytics": {"type": "boolean"},
+        "error_reporting": {"type": "boolean"},
+        "learning": {"type": "boolean"}
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Profile creation timestamp"
+    }
+  },
+  "required": ["id", "name"],
+  "additionalProperties": false
+}

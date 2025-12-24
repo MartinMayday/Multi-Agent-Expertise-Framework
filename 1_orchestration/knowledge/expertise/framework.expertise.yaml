@@ -1,0 +1,125 @@
+# Default Expertise Template
+
+This file demonstrates the 4-pillar expertise structure for the framework.
+
+```yaml
+# ============================================================================
+# IDENTITY - Who and what is this expert?
+# ============================================================================
+
+name: framework-expert
+version: "0.1.0"
+domain: multi-agent-expertise-framework
+created_at: "2025-12-24"
+
+# ============================================================================
+# CONTEXT - What mental models guide this expert?
+# ============================================================================
+
+mental_models:
+  - garden:             # Cultivation: grows systematically
+      description: "Knowledge grows like plants - needs tending"
+      application: "Use when building expertise incrementally"
+  
+  - budget:             # Resources: allocates wisely
+      description: "Every action has costs and benefits"
+      application: "Use when optimizing token usage, time"
+  
+  - river:              # Flow: moves naturally
+      description: "Work flows from source to delta naturally"
+      application: "Use when designing workflows and pipelines"
+  
+  - biopsychosocial:    # Systems: multi-dimensional
+      description: "Consider biological, psychological, social factors"
+      application: "Use when analyzing complex systems"
+  
+  - alchemy:            # Transformation: turns base into gold
+      description: "Raw inputs transform into valuable outputs"
+      application: "Use when designing learning and improvement systems"
+
+# ============================================================================
+# KNOWLEDGE - What does this expert know?
+# ============================================================================
+
+concepts:
+  # Populated by self-improve: extract from codebase and experience
+  # Example:
+  # - name: DOE Pattern
+  #   description: Directives → Orchestration → Execution
+  #   confidence: 0.95
+
+patterns:
+  # Repeated behaviors, heuristics, error patterns
+  # Populated by PatternRecognizer
+
+entities:
+  # Named entities: services, APIs, databases, concepts
+  # Populated by FactExtractor
+
+# ============================================================================
+# BEHAVIOR - What can this expert do?
+# ============================================================================
+
+workflows:
+  - question:
+      description: "Answer questions using codebase knowledge"
+      tools: [read, grep, search]
+      output: "Answer with source references"
+  
+  - plan:
+      description: "Create implementation plans"
+      tools: [read, analyze, write]
+      output: "Step-by-step plan with verification criteria"
+  
+  - build:
+      description: "Implement changes"
+      tools: [read, write, test]
+      output: "Code changes with rationale"
+  
+  - self-improve:
+      description: "Learn from experience"
+      tools: [read, analyze, extract]
+      output: "Updated expertise.yaml"
+  
+  - plan_build_improve:
+      description: "Full cycle: plan → build → learn"
+      tools: [all]
+      output: "Complete feature with improvements"
+
+# ============================================================================
+# VALIDATION - How do we verify this expertise?
+# ============================================================================
+
+validation:
+  - codebase_is_authoritative: true
+  - expertise_matches_reality: true
+  - self_annealing_enabled: true
+  - progressive_disclosure_l1_to_l4: true
+```
+
+## Usage
+
+1. **Copy this template** to `expertise.yaml` in your project
+2. **Update IDENTITY** section with your domain
+3. **Run workflows** (question, plan, build, self-improve)
+4. **Self-improve updates** the KNOWLEDGE section automatically
+5. **Validate** that expertise reflects actual codebase
+
+## Integration with DOE
+
+- **Directives** (0_directives/): Define what workflows mean
+- **Orchestration** (1_orchestration/): Load this expertise.yaml, select agent
+- **Execution** (2_executions/): Run chosen workflow
+- **Memory** (3_state/): Record facts, patterns, decisions
+
+## Self-Improvement Loop
+
+```
+expertise.yaml (current) 
+    ↓ (question workflow)
+KNOWLEDGE validation against codebase
+    ↓ (discrepancies found)
+Generate updates to KNOWLEDGE
+    ↓ (self-improve workflow)
+Updated expertise.yaml
+```
