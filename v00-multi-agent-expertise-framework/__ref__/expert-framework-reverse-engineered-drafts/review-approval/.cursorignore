@@ -1,0 +1,72 @@
+# Cursor IDE Context Exclusion
+
+# Original reference files (not part of OS)
+original-repo/
+
+# Provenance and temporary documentation
+marked-for-deletion/
+
+# Python caches
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Log files
+*.log
+logs/
+
+# Environment and secrets
+.env
+.env.*
+*.key
+*.pem
+*.secret
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Staging areas (selectively loadable - don't auto-load everything)
+# Note: Sessions are included but should be loaded selectively
+# review-approval/ and staging/ are included but load only relevant files
+
+# Context memory system
+# Exclude conversation transcripts by default (they're large)
+# Keep .context/core/ included so agents always load rules/session quickly
+.context/conversations/
+# To load a specific transcript, reference it explicitly: .context/conversations/[session-id].md
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Node modules (if any)
+node_modules/
+
+# Large binary files
+*.bin
+*.so
+*.dylib
+*.dll
+

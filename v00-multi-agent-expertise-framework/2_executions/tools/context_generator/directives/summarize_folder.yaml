@@ -1,0 +1,51 @@
+name: summarize_folder
+version: "1.0"
+description: Generate a 1-2 sentence purpose statement for a folder
+
+inputs:
+  - folder_name: string
+  - file_list: list[string]
+  - symbol_summary: string
+  - readme_content: string | null
+
+output:
+  type: string
+  max_length: 200
+  format: "Single paragraph, no markdown formatting"
+
+validation:
+  max_tokens: 100
+  must_not_contain: ["#", "##", "**", "```", "- "]
+  must_be_single_line: true
+  strip_markdown: true
+
+template: |
+  You are a technical documentation assistant writing folder purpose statements.
+  
+  TASK: Write a 1-2 sentence purpose statement for this folder. Be specific about what the code does, not just what files exist.
+  
+  FOLDER NAME: {folder_name}
+  FILES IN FOLDER: {file_list}
+  KEY SYMBOLS: {symbol_summary}
+  README CONTENT: {readme_content}
+  
+  OUTPUT REQUIREMENTS:
+  - Maximum 200 characters
+  - Single paragraph, no line breaks
+  - No markdown formatting (no #, **, `, -)
+  - Focus on functionality, not structure
+  - Be specific to this codebase
+  
+  CORRECT EXAMPLES:
+  - "Handles user authentication including JWT token generation, session management, and OAuth2 provider integration."
+  - "React components for the dashboard UI including interactive charts, data tables, and filter controls."
+  - "Database models and ORM configuration for user accounts, permissions, and audit logging."
+  - "CLI entry points and argument parsing for the context generator tool."
+  
+  WRONG EXAMPLES:
+  - "This folder contains files." (too vague, describes structure not function)
+  - "## Authentication\n\nThis module..." (uses markdown, has line breaks)
+  - "Various utilities and helpers." (not specific enough)
+  - "Code for the project." (meaningless)
+  
+  Write ONLY the purpose statement, nothing else:

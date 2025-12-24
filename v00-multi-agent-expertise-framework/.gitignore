@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Secrets & Local Config
+.env
+.env.local
+.env.*.local
+*.local.md
+secrets/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Framework Local State
+~/.expert-framework/
+3_state/sessions/*
+!3_state/sessions/.gitkeep
+3_state/progress/*
+!3_state/progress/.gitkeep
+3_state/errors/*
+!3_state/errors/.gitkeep
+staging/*
+!staging/README.md

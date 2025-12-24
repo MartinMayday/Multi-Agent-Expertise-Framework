@@ -1,0 +1,45 @@
+# Cursor IDE Project Rules - Entrypoint
+
+This project implements a **file-based agentic workflow OS** where AI acts as orchestrator over deterministic Python tools.
+
+## Authoritative Specifications
+
+Read these files first for complete system understanding:
+- `AGENTIC_WORKFLOW_CONTRACT.md` - Filesystem-as-API contract, permissions, ownership
+- `FRAMEWORK.md` - Complete system architecture and orchestration patterns
+- `FRAMEWORK-CHECKLIST.md` - Deployment validation criteria
+- `AGENTS.md` - Agent catalog and capabilities
+
+## Non-Negotiable Principles
+
+1. **No assumptions** - All responses must trace to documentation, KB, or execution results
+2. **KB-first execution** - Check `shared-knowledgebase/manifest.md` before answering; declare KB_STATUS
+3. **Cite files** - Reference specific file paths when making claims
+4. **No secrets** - Never commit tokens/keys; use `.env` files (excluded from context)
+5. **Staging-only writes** - ALL new/changed files MUST be written to `review-approval/` or `staging/` first. Direct writes to canonical locations require explicit user permission.
+6. **Filesystem-as-API** - New artifacts go to: `directives/`, `executions/`, `shared-knowledgebase/`, `agents/` (after staging approval)
+7. **Root hygiene** - Root directory reserved for essential runtime docs only
+
+## Detailed Rules
+
+For complete behavioral guidance, see:
+- `.cursor/rules/project_rules.mdc` - Comprehensive project rules with enforcement checkpoints
+
+## Slash Commands
+
+Reusable commands available via `.cursor/commands/`:
+- `/validate-scaffold` - Validate OS structure
+- `/scaffold-os` - Regenerate scaffold
+- `/kb-first-answer` - Enforce KB gate before responding
+- `/create-kb-snippet` - Generate KB snippet in standard format
+- `/handoff` - Emit formal handoff contract
+- `/create-execution-tool` - Scaffold new Python tool
+- `/create-execution-workflow` - Scaffold new workflow
+- `/failure-triage` - Standard failure response protocol
+- `/eval-maturity` - Run or request evaluation tooling
+- `/plan-build-self-improve` - Execute plan→build→self-improve loop
+
+## Context Exclusion
+
+Files in `.cursorignore` are excluded from context by default (original-repo/, marked-for-deletion/, caches, logs, .env files).
+

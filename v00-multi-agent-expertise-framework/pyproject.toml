@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multi-agent-expertise-framework"
+version = "0.1.0"
+authors = [
+  { name="MartinMayday", email="martin@martinmayday.com" },
+]
+description = "File-based agentic workflows OS combining DOE and Elle Context"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/MartinMayday/multi-agent-expertise-framework"
+"Bug Tracker" = "https://github.com/MartinMayday/multi-agent-expertise-framework/issues"
+
+[project.scripts]
+expert = "main:main"

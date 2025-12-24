@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Queue",
+  "type": "object",
+  "properties": {
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "content": { "type": "string" },
+          "status": { 
+            "type": "string",
+            "enum": ["pending", "in_progress", "completed", "blocked", "failed"]
+          },
+          "priority": { "type": "integer" },
+          "blockers": { 
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "completed_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "content", "status", "created_at"]
+      }
+    }
+  },
+  "required": ["tasks"]
+}
