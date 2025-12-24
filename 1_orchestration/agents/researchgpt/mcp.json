@@ -1,0 +1,11 @@
+{
+  "agent": "researchgpt",
+  "model": "claude-sonnet-4.5",
+  "mcp_servers": {
+    "web.search": {
+      "required": false,
+      "priority": "medium",
+      "description": "Web search capability"
+    }
+  }
+}

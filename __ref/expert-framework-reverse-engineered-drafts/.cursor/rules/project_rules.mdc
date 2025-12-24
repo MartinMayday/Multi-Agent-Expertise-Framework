@@ -1,0 +1,182 @@
+---
+description: Comprehensive project rules for file-based agentic workflow OS
+globs: "**/*"
+alwaysApply: true
+---
+
+# Project Rules - Expert Framework Agentic OS
+
+This project implements a **file-based agentic workflow OS** where AI acts as orchestrator over deterministic Python tools. All AI behavior must follow these rules.
+
+## Authority Order
+
+When making decisions, consult in this order:
+1. **Authoritative specs**: `AGENTIC_WORKFLOW_CONTRACT.md`, `FRAMEWORK.md`, `FRAMEWORK-CHECKLIST.md`, `AGENTS.md`
+2. **Directives**: `directives/*.md` (KB_GUARDRAILS, HANDOFF_PROTOCOL, PROGRESSIVE_LOADING, FAILURE_HANDLING, STAGING_AND_APPROVAL)
+3. **Knowledge base**: `shared-knowledgebase/manifest.md` and agent-specific KB manifests
+4. **Execution tools**: `executions/` (Python tools, not assumptions)
+
+## KB-First Execution (MANDATORY)
+
+**Reference**: `directives/KB_GUARDRAILS.md`
+
+Before producing any response:
+1. Read `shared-knowledgebase/manifest.md`
+2. Read relevant agent KB manifest (`kb_<agent>-manifest.md`)
+3. Declare `KB_STATUS`: `sufficient`, `partial`, or `insufficient`
+4. If insufficient: STOP, document what's missing, ask user for approval to research
+5. After research: Generate KB snippets in standard format (see `shared-knowledgebase/frameworks/kb_snippet_format.md`)
+6. Only then produce the response, citing KB snippet IDs
+
+**Enforcement**: MetaGPT rejects responses without KB_STATUS declaration.
+
+## Progressive Loading (MANDATORY)
+
+**Reference**: `directives/PROGRESSIVE_LOADING.md`
+
+Load context in stages:
+- **Level 1**: Front matter only (< 500 tokens) - decide if skill/knowledge is relevant
+- **Level 2**: Full instructions (< 2000 tokens) - understand workflow (requires user approval)
+- **Level 3**: Reference files (< 1500 tokens per snippet, max 3 snippets) - detailed docs
+- **Level 4**: Execute tools, don't load code - use `executions/` Python tools
+
+**Enforcement**: Don't load entire knowledgebase or all agent instructions upfront.
+
+## Handoff Protocol (MANDATORY)
+
+**Reference**: `directives/HANDOFF_PROTOCOL.md`
+
+When transferring work between agents:
+1. Agent A reaches terminal state (completed/blocked/failed)
+2. Agent A emits handoff contract JSON with all required fields
+3. MetaGPT evaluates and routes to Agent B or user
+4. Agent B receives handoff contract + workflow state
+
+**Enforcement**: No agent-to-agent transitions without formal handoff contract.
+
+## Staging-Only Write Policy (MANDATORY)
+
+**Reference**: `directives/STAGING_AND_APPROVAL.md`
+
+**Default write location**: `review-approval/` or `staging/`
+
+**Rules**:
+- ALL new/changed files MUST be written to staging first
+- Create `review-approval/changeset.yaml` documenting what, why, target paths
+- Run validation: `python scripts/validate_scaffold.py --project-root . -v`
+- Generate approval checklist
+- Only promote after validation passes AND human approval
+
+**Allowed direct writes** (exceptions):
+- `sessions/` (agent execution history)
+- `logs/` (execution logs)
+- Explicit user permission for specific files
+
+**Forbidden**:
+- Direct writes to `directives/`, `executions/`, `shared-knowledgebase/`, `agents/` without staging
+- Promotion without validation
+- Promotion without approval
+
+## Filesystem-as-API
+
+**Reference**: `AGENTIC_WORKFLOW_CONTRACT.md`
+
+New artifacts must go to:
+- `directives/` - Behavior contracts
+- `executions/` - Python tools and workflows
+- `shared-knowledgebase/` - Cross-agent knowledge
+- `agents/` - Agent definitions
+
+**After staging approval**, not before.
+
+## Root Hygiene
+
+Root directory is reserved for **essential runtime docs only**:
+- `FRAMEWORK.md` - System specification
+- `AGENTIC_WORKFLOW_CONTRACT.md` - System contract
+- `AGENTS.md` - Agent catalog
+- `FRAMEWORK-CHECKLIST.md` - Deployment checklist
+- `README.md` - Quick start guide
+
+**Forbidden in root**:
+- Temporary documentation
+- Status files
+- Conversation artifacts
+- Deployment summaries
+
+Move non-essential files to `marked-for-deletion/` or `review-approval/` for review.
+
+## No Assumptions
+
+All responses must trace to:
+- Documentation (authoritative specs, directives, KB)
+- Execution results (tool outputs, test results)
+- User-provided context
+
+**Forbidden**:
+- Making up API signatures
+- Inventing file structures
+- Assuming tool behavior without checking `executions/README.md`
+- Claiming "works" without validation steps
+
+## No Secrets
+
+**Never**:
+- Commit tokens, keys, or credentials
+- Hardcode API keys in code
+- Expose secrets in logs or outputs
+
+**Use**:
+- `.env` files (excluded from context via `.cursorignore`)
+- Environment variables
+- Secret managers
+
+## Cite Files
+
+When making claims, reference specific file paths:
+- ✅ "According to `directives/KB_GUARDRAILS.md`, agents must..."
+- ❌ "The system requires..." (without citation)
+
+## Operational Commands
+
+Use slash commands from `.cursor/commands/`:
+- `/validate-scaffold` - Validate OS structure
+- `/scaffold-os` - Regenerate scaffold
+- `/kb-first-answer` - Enforce KB gate
+- `/create-kb-snippet` - Generate KB snippet
+- `/handoff` - Emit handoff contract
+- `/stage-changes` - Create changeset and stage outputs
+- `/promote-staged-changes` - Promote after validation + approval
+- `/create-execution-tool` - Scaffold new Python tool
+- `/create-execution-workflow` - Scaffold new workflow
+- `/failure-triage` - Standard failure response
+- `/eval-maturity` - Run or request evaluation
+- `/plan-build-self-improve` - Execute plan→build→self-improve loop
+
+## Context Exclusion
+
+Files in `.cursorignore` are excluded from context:
+- `original-repo/` - Original reference files
+- `marked-for-deletion/` - Provenance docs
+- `**/__pycache__/` - Python caches
+- `*.log` - Log files
+- `.env`, `.env.*` - Secrets
+
+**Sessions** are included but should be loaded selectively (only relevant session artifacts).
+
+## Validation
+
+Before claiming completion:
+- Run `python scripts/validate_scaffold.py --project-root . -v`
+- Run relevant tests
+- Check for linting errors
+- Verify no secrets exposed
+
+## Enforcement
+
+MetaGPT validates all agent behaviors against:
+- This rules file
+- `AGENTIC_WORKFLOW_CONTRACT.md`
+- Applicable directives
+
+Violations result in rejection and correction request.

@@ -1,0 +1,109 @@
+# Expertise File Template
+# Location: .claude/commands/experts/<domain>/expertise.yaml
+# This file contains the domain's accumulated knowledge structured around four pillars
+
+information:
+  architecture:
+    - "High-level system design description"
+    - "Component relationships and interactions"
+    - "Data flow patterns"
+    - "Technology stack and versions"
+  
+  schemas:
+    - "Database schemas and table structures"
+    - "API contracts and request/response formats"
+    - "Data models and their relationships"
+    - "Configuration file structures"
+  
+  concepts:
+    - "Key domain concepts and terminology"
+    - "Abstractions and their purposes"
+    - "Core principles and philosophies"
+    - "Domain-specific patterns"
+
+examples:
+  code_snippets:
+    - title: "Example Title"
+      description: "What this code demonstrates"
+      code: |
+        // Example code here
+        function example() {
+          // Implementation
+        }
+      context: "When to use this pattern"
+      files: ["path/to/example/file.js"]
+  
+  use_cases:
+    - scenario: "Scenario description"
+      solution: "How this scenario is solved"
+      files: ["path/to/relevant/file.py"]
+      explanation: "Why this approach works"
+  
+  real_world_examples:
+    - name: "Example Name"
+      location: "path/to/implementation"
+      description: "What this demonstrates"
+      key_insights: ["Insight 1", "Insight 2"]
+
+patterns:
+  best_practices:
+    - pattern_name: "Pattern Description"
+      when_to_use: "When this pattern is appropriate"
+      how_to_implement: "Step-by-step implementation"
+      benefits: ["Benefit 1", "Benefit 2"]
+      examples: ["path/to/example1", "path/to/example2"]
+  
+  anti_patterns:
+    - anti_pattern_name: "What not to do"
+      why_avoid: "Why this should be avoided"
+      correct_alternative: "What to do instead"
+      examples: ["path/to/bad/example"]
+  
+  workflows:
+    - workflow_name: "Workflow Description"
+      steps:
+        - "Step 1 description"
+        - "Step 2 description"
+        - "Step 3 description"
+      when_to_use: "When this workflow applies"
+      files_involved: ["path/to/file1", "path/to/file2"]
+  
+  common_solutions:
+    - problem: "Problem description"
+      solution: "Solution approach"
+      implementation: "How to implement"
+      files: ["path/to/solution"]
+
+expertise:
+  decision_guidelines:
+    - decision_point: "When to choose X vs Y"
+      criteria: ["Criterion 1", "Criterion 2"]
+      trade_offs: "What to consider"
+      recommendation: "Recommended approach"
+  
+  architectural_principles:
+    - principle: "Core principle name"
+      description: "What this principle means"
+      application: "How to apply it"
+      examples: ["path/to/example"]
+  
+  validation_rules:
+    - rule: "Validation rule description"
+      how_to_check: "How to verify this rule"
+      when_to_apply: "When this validation is needed"
+      failure_handling: "What to do if validation fails"
+  
+  troubleshooting:
+    - issue: "Common issue description"
+      symptoms: ["Symptom 1", "Symptom 2"]
+      cause: "Root cause"
+      solution: "How to resolve"
+      prevention: "How to prevent"
+
+# Notes:
+# - Keep this file updated through self-improve commands
+# - Always validate against actual codebase before trusting
+# - Add concrete examples with file paths
+# - Document both what works and what doesn't (anti-patterns)
+# - Include decision-making guidelines for common choices
+

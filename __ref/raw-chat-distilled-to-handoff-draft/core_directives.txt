@@ -1,0 +1,932 @@
+# CORE DIRECTIVES - DEPLOYMENT TEMPLATE
+
+**System**: File-Based Agentic Workflow  
+**Format**: Standard Operating Procedure (SOP)  
+**Target**: IDE/CLI Agnostic Orchestrator  
+**Audience**: AI/LLM Agent Deployers
+
+---
+
+## Directive 1: KB_GUARDRAILS.md
+
+### DIRECTIVE HEADER
+```markdown
+---
+directive_id: KB_GUARDRAILS
+version: 1.0
+enforcement_level: MANDATORY
+applies_to: ALL_AGENTS
+bypass_allowed: false
+validation_checkpoint: PRE_EXECUTION
+---
+```
+
+### WHAT THIS DIRECTIVE DOES
+Prevents agents from producing responses based on assumptions. Forces documentation-first workflow through mandatory knowledge base checks.
+
+### ORCHESTRATOR EXECUTION SEQUENCE
+
+**CHECKPOINT 1: KB Gate Entry**
+```
+BEFORE {{AGENT_NAME}} processes {{USER_REQUEST}}:
+  
+  REQUIRED_ACTION:
+    - Read {{KB_MANIFEST_PATH}}
+    - Read {{AGENT_KB_MANIFEST_PATH}}
+  
+  REQUIRED_OUTPUT:
+    - KB_STATUS: {{sufficient|partial|insufficient}}
+  
+  ENFORCEMENT:
+    IF KB_STATUS == undeclared:
+      HALT_EXECUTION
+      RETURN: "Agent must declare KB sufficiency status"
+```
+
+**CHECKPOINT 2: Insufficiency Handler**
+```
+IF KB_STATUS == "insufficient" OR KB_STATUS == "partial":
+  
+  REQUIRED_ACTION:
+    - Identify {{MISSING_INFORMATION}}
+    - Document {{WHY_BLOCKS_PROGRESS}}
+  
+  REQUIRED_OUTPUT:
+    - Stop execution immediately
+    - Present to user:
+      • What is missing: {{MISSING_INFORMATION}}
+      • Why it blocks: {{WHY_BLOCKS_PROGRESS}}
+      • Approval needed: {{yes|no}}
+  
+  ENFORCEMENT:
+    Agent CANNOT proceed to research without explicit user approval
+```
+
+**CHECKPOINT 3: Research Gate**
+```
+IF user_approval == true:
+  
+  REQUIRED_ACTION:
+    - Execute {{RESEARCH_METHOD}} using {{MCP_TOOLS_DECLARED}}
+    - Track {{SOURCE_URL}} for every factual claim
+    - Prefer {{OFFICIAL_DOCS}} over {{SECONDARY_SOURCES}}
+  
+  REQUIRED_OUTPUT:
+    - Research findings with source attribution
+    - Confidence scoring per finding
+  
+  ENFORCEMENT:
+    IF claim has no source:
+      REJECT_CLAIM
+      LOG: "Unsourced claim removed"
+```
+
+**CHECKPOINT 4: KB Write-Back**
+```
+AFTER research completion:
+  
+  REQUIRED_ACTION:
+    - Generate {{NEW_KB_SNIPPETS}} in standard format
+    - OR propose {{KB_SNIPPET_UPDATES}} to existing entries
+  
+  REQUIRED_OUTPUT:
+    - Ready-to-save KB snippet(s)
+    - Update location: {{KB_PATH}}
+    - Frontmatter metadata complete
+  
+  ENFORCEMENT:
+    IF no KB update proposed:
+      MARK_TASK_INCOMPLETE
+      RETURN: "Research without KB update is invalid"
+```
+
+**CHECKPOINT 5: Task Output**
+```
+ONLY AFTER all checkpoints pass:
+  
+  REQUIRED_ACTION:
+    - Produce {{TASK_OUTPUT}}
+    - Cite {{KB_SNIPPET_IDS}} used
+  
+  REQUIRED_OUTPUT:
+    - Primary response
+    - KB snippet references
+    - Source traceability
+```
+
+### FAILURE HANDLING
+```
+AT ANY CHECKPOINT:
+  IF agent cannot proceed safely:
+    
+    REQUIRED_ACTION:
+      - Emit HANDOFF block to {{METAGPT}}
+      - Status: {{blocked}}
+      - Missing: {{REQUIRED_INPUT}}
+    
+    ENFORCEMENT:
+      MetaGPT evaluates: {{retry|ask_user|terminate}}
+```
+
+### VALIDATION CRITERIA
+```
+Directive is SUCCESSFUL when:
+  ✓ No agent response contains undocumented facts
+  ✓ All research updates KB
+  ✓ KB grows on every session
+  ✓ Source traceability is maintained
+
+Directive FAILED when:
+  ✗ Agent produces unsourced claims
+  ✗ Research happens without user approval
+  ✗ KB remains unchanged after research
+  ✗ Agent proceeds with "insufficient" KB status
+```
+
+### DEPLOYMENT INSTRUCTIONS
+```
+1. Save as: {{PROJECT_ROOT}}/directives/KB_GUARDRAILS.md
+2. Reference in: ALL agent {{SYSTEM_INSTRUCTIONS_MD}} files
+3. Enforcement by: {{METAGPT}} pre-execution validation
+4. Log violations to: {{PROJECT_ROOT}}/sessions/kb_violations.log
+```
+
+---
+
+## Directive 2: HANDOFF_PROTOCOL.md
+
+### DIRECTIVE HEADER
+```markdown
+---
+directive_id: HANDOFF_PROTOCOL
+version: 1.0
+enforcement_level: MANDATORY
+applies_to: ALL_AGENT_TRANSITIONS
+bypass_allowed: false
+validation_checkpoint: POST_EXECUTION
+---
+```
+
+### WHAT THIS DIRECTIVE DOES
+Establishes formal state transfer between agents. Ensures work continuity, prevents state loss, and makes failures explicit.
+
+### ORCHESTRATOR EXECUTION SEQUENCE
+
+**PHASE 1: Pre-Handoff Validation**
+```
+BEFORE {{AGENT_A}} transfers to {{AGENT_B}}:
+  
+  REQUIRED_CHECKS:
+    - Task objective: {{completed|blocked|failed}}
+    - Required artifacts: {{produced|missing}}
+    - Assumptions made: {{documented|undocumented}}
+  
+  ENFORCEMENT:
+    IF task objective == "in_progress":
+      REJECT_HANDOFF
+      RETURN: "Agent must reach terminal state"
+```
+
+**PHASE 2: Handoff Contract Emission**
+```
+{{AGENT_A}} MUST emit:
+
+{
+  "handoff_id": "{{UNIQUE_ID}}",
+  "from_agent": "{{AGENT_A_NAME}}",
+  "to_agent": "{{AGENT_B_NAME|METAGPT}}",
+  "timestamp": "{{ISO_8601_TIMESTAMP}}",
+  
+  "status": "{{success|blocked|failed}}",
+  
+  "produced_artifacts": [
+    {
+      "type": "{{file|data|decision}}",
+      "location": "{{ARTIFACT_PATH}}",
+      "description": "{{BRIEF_DESCRIPTION}}"
+    }
+  ],
+  
+  "assumptions": [
+    {
+      "assumption": "{{ASSUMPTION_TEXT}}",
+      "validated": {{true|false}},
+      "risk": "{{low|medium|high}}"
+    }
+  ],
+  
+  "missing_inputs": [
+    {
+      "required": "{{INPUT_DESCRIPTION}}",
+      "reason": "{{WHY_NEEDED}}",
+      "blocking": {{true|false}}
+    }
+  ],
+  
+  "recommended_next_agent": "{{AGENT_NAME|USER_INPUT_REQUIRED}}",
+  
+  "context_summary": "{{ONE_PARAGRAPH_SUMMARY}}",
+  
+  "kb_updates_proposed": {{true|false}},
+  "session_id": "{{SESSION_UUID}}"
+}
+
+ENFORCEMENT:
+  IF handoff_contract missing any required field:
+    REJECT_HANDOFF
+    LOG: "Incomplete handoff contract"
+```
+
+**PHASE 3: MetaGPT Evaluation**
+```
+{{METAGPT}} receives handoff contract:
+  
+  EVALUATION_CRITERIA:
+    - Status is terminal: {{completed|blocked|failed}}
+    - Artifacts match task objective
+    - Assumptions are documented
+    - Missing inputs are actionable
+  
+  DECISION_TREE:
+    IF status == "success" AND artifacts_complete:
+      → ADVANCE to {{RECOMMENDED_NEXT_AGENT}}
+    
+    IF status == "blocked" AND missing_inputs_actionable:
+      → ASK_USER for {{MISSING_INPUTS}}
+    
+    IF status == "failed" AND retry_count < {{MAX_RETRIES}}:
+      → RETRY with adjusted instructions
+    
+    IF status == "failed" AND retry_count >= {{MAX_RETRIES}}:
+      → TERMINATE workflow with explanation
+  
+  ENFORCEMENT:
+    MetaGPT logs decision rationale to {{WORKFLOW_STATE_JSON}}
+```
+
+**PHASE 4: State Transfer**
+```
+IF handoff approved:
+  
+  REQUIRED_ACTIONS:
+    - Update {{WORKFLOW_STATE_JSON}} with:
+      • Previous agent: {{AGENT_A}}
+      • Current agent: {{AGENT_B}}
+      • Artifacts available: {{ARTIFACT_PATHS}}
+      • Context snapshot: {{SUMMARY}}
+    
+    - Initialize {{AGENT_B}} with:
+      • Handoff contract
+      • Workflow state
+      • Read-only access to {{AGENT_A_SESSIONS}}
+  
+  ENFORCEMENT:
+    {{AGENT_B}} starts with complete context, no assumptions needed
+```
+
+**PHASE 5: Handoff Logging**
+```
+AFTER handoff completion:
+  
+  REQUIRED_LOGGING:
+    - Append to: {{WORKFLOW_DIR}}/handoffs.log
+    - Include: handoff_id, from, to, status, timestamp
+    - Archive contract to: {{WORKFLOW_DIR}}/handoff_contracts/{{HANDOFF_ID}}.json
+  
+  ENFORCEMENT:
+    All handoffs must be auditable
+```
+
+### ROLE ISOLATION ENFORCEMENT
+```
+STRICT BOUNDARIES:
+  
+  ResearchGPT:
+    ALLOWED: Web search, documentation gathering
+    FORBIDDEN: Design decisions, implementation choices
+  
+  DesignGPT:
+    ALLOWED: Architecture, patterns, specifications
+    FORBIDDEN: Research, implementation, testing
+  
+  ImplementationGPT:
+    ALLOWED: Code generation from specs
+    FORBIDDEN: New design decisions, scope changes
+
+VIOLATION HANDLING:
+  IF {{AGENT_X}} performs {{FORBIDDEN_ACTION}}:
+    FORCE_HANDOFF to MetaGPT
+    LOG: "Role boundary violation"
+    REASON: "{{AGENT_X}} attempted {{FORBIDDEN_ACTION}}"
+```
+
+### FAILURE HANDLING
+```
+IF handoff fails:
+  
+  REQUIRED_ACTIONS:
+    - Preserve {{AGENT_A_STATE}} (no data loss)
+    - Document {{FAILURE_REASON}}
+    - Return control to MetaGPT
+    - Offer options:
+      • Retry with same agent
+      • Assign different agent
+      • Request user clarification
+      • Terminate workflow gracefully
+```
+
+### VALIDATION CRITERIA
+```
+Directive is SUCCESSFUL when:
+  ✓ All agent transitions have handoff contracts
+  ✓ No work is lost between transitions
+  ✓ Failures are explicit, not silent
+  ✓ State is always auditable
+
+Directive FAILED when:
+  ✗ Agent transitions without contract
+  ✗ State is lost or corrupted
+  ✗ Assumptions leak between agents
+  ✗ Role boundaries are violated
+```
+
+### DEPLOYMENT INSTRUCTIONS
+```
+1. Save as: {{PROJECT_ROOT}}/directives/HANDOFF_PROTOCOL.md
+2. Reference in: ALL agent {{SYSTEM_INSTRUCTIONS_MD}} files
+3. Enforcement by: {{METAGPT}} at agent transitions
+4. State tracking: {{PROJECT_ROOT}}/sessions/workflows/{{WORKFLOW_ID}}/state.json
+5. Log handoffs to: {{PROJECT_ROOT}}/sessions/workflows/{{WORKFLOW_ID}}/handoffs.log
+```
+
+---
+
+## Directive 3: PROGRESSIVE_LOADING.md
+
+### DIRECTIVE HEADER
+```markdown
+---
+directive_id: PROGRESSIVE_LOADING
+version: 1.0
+enforcement_level: MANDATORY
+applies_to: ALL_AGENTS
+bypass_allowed: false
+validation_checkpoint: CONTEXT_LOADING
+---
+```
+
+### WHAT THIS DIRECTIVE DOES
+Prevents context window bloat by loading documentation in stages. Reduces costs, improves focus, enables scaling.
+
+### ORCHESTRATOR EXECUTION SEQUENCE
+
+**LEVEL 1: Front Matter (Always Loaded)**
+```
+ON agent invocation:
+  
+  AUTO_LOAD:
+    - {{AGENT_SYSTEM_INSTRUCTIONS_MD}} frontmatter only
+    - {{KB_MANIFEST_MD}} quick reference section only
+    - {{DIRECTIVES_LIST}} (names only, not full content)
+  
+  EXPECTED_CONTEXT_SIZE:
+    - Target: < 500 tokens
+    - Purpose: Answer "Should I use this skill/knowledge?"
+  
+  ENFORCEMENT:
+    IF context > 500 tokens at L1:
+      WARN: "Front matter too verbose"
+```
+
+**LEVEL 2: Full Instructions (On-Demand)**
+```
+WHEN agent decides skill is relevant:
+  
+  REQUIRED_ACTION:
+    - Ask user: "Load {{SKILL_NAME}}? ({{TOKEN_ESTIMATE}} tokens)"
+    - IF approved: Load {{AGENT_SYSTEM_INSTRUCTIONS_MD}} full content
+  
+  CONTEXT_BUDGET:
+    - Target: < 2000 tokens
+    - Purpose: Understand complete workflow
+  
+  ENFORCEMENT:
+    IF agent loads without user confirmation:
+      WARN: "Unauthorized L2 load"
+      LOG: violation to {{CONTEXT_VIOLATIONS_LOG}}
+```
+
+**LEVEL 3: Reference Files (Selectively Loaded)**
+```
+WHEN agent needs detailed documentation:
+  
+  REQUIRED_PATTERN:
+    - Agent identifies {{KNOWLEDGE_GAP}}
+    - Checks {{KB_MANIFEST_MD}} for relevant snippet
+    - Loads ONLY {{SPECIFIC_SNIPPET_MD}}
+    - NOT entire knowledge base
+  
+  CONTEXT_BUDGET:
+    - Per snippet: < 1500 tokens
+    - Max simultaneous: {{MAX_SNIPPETS}} (default: 3)
+  
+  ENFORCEMENT:
+    IF agent loads > {{MAX_SNIPPETS}}:
+      FORCE_UNLOAD oldest snippet
+      LOG: "Context budget exceeded"
+```
+
+**LEVEL 4: Source Code (Execute, Don't Load)**
+```
+WHEN agent needs computation:
+  
+  REQUIRED_PATTERN:
+    - Read {{EXECUTIONS_README_MD}} to find tool
+    - Execute {{PYTHON_TOOL_PATH}} with {{INPUT_PARAMS}}
+    - Receive {{OUTPUT_ONLY}} (code stays external)
+  
+  CONTEXT_IMPACT:
+    - Tool code: NOT loaded into context
+    - Tool output: Loaded (typically < 500 tokens)
+  
+  ENFORCEMENT:
+    Agent sees: input → [black box] → output
+    Agent never sees: tool implementation details
+```
+
+### CONTEXT BUDGET ENFORCEMENT
+```
+GLOBAL_LIMITS:
+  
+  MAX_CONTEXT_WINDOW:
+    - Per agent invocation: {{MAX_TOKENS}} (default: 15000)
+    - Progressive loading overhead: {{OVERHEAD_TOKENS}} (default: 2000)
+    - Available for task: {{MAX_TOKENS - OVERHEAD_TOKENS}}
+  
+  MONITORING:
+    - Track: {{CURRENT_CONTEXT_SIZE}}
+    - Alert at: {{WARNING_THRESHOLD}}% (default: 80%)
+    - Halt at: {{MAX_THRESHOLD}}% (default: 95%)
+  
+  ENFORCEMENT:
+    IF context exceeds {{MAX_THRESHOLD}}:
+      FORCE_UNLOAD least-recently-used content
+      PRIORITIZE: directives > KB snippets > examples
+```
+
+### LOADING DECISION TREE
+```
+Agent asks: "Do I need X?"
+
+DECISION_PROCESS:
+  
+  OPTION_1: Already in Context
+    → Use it immediately
+  
+  OPTION_2: Available in Manifest (L1)
+    → Relevant to task? Load L2
+  
+  OPTION_3: Not in Context, Check Manifest
+    → Load specific snippet (L3)
+  
+  OPTION_4: Requires Computation
+    → Execute tool (L4), don't load code
+  
+  OPTION_5: Not Available Anywhere
+    → Return to MetaGPT: "Missing: {{WHAT}}"
+```
+
+### UNLOADING STRATEGY
+```
+WHEN context budget tight:
+  
+  PRIORITIZED_RETENTION:
+    1. {{DIRECTIVES}} (KB_GUARDRAILS, HANDOFF_PROTOCOL, etc.)
+    2. {{AGENT_SYSTEM_INSTRUCTIONS}}
+    3. {{CURRENT_TASK_CONTEXT}}
+    4. {{ACTIVE_KB_SNIPPETS}}
+    5. {{EXAMPLES}} (unload first if needed)
+  
+  ENFORCEMENT:
+    Never unload items 1-3
+    Unload items 4-5 in reverse priority order
+```
+
+### VALIDATION CRITERIA
+```
+Directive is SUCCESSFUL when:
+  ✓ Context stays under budget consistently
+  ✓ Agents load only what they need
+  ✓ Performance remains fast
+  ✓ Costs are minimized
+
+Directive FAILED when:
+  ✗ Context regularly exceeds limits
+  ✗ Agents load entire KB upfront
+  ✗ Response times increase
+  ✗ Token usage spikes
+```
+
+### DEPLOYMENT INSTRUCTIONS
+```
+1. Save as: {{PROJECT_ROOT}}/directives/PROGRESSIVE_LOADING.md
+2. Reference in: ALL agent {{SYSTEM_INSTRUCTIONS_MD}} files
+3. Enforcement by: Context manager (built-in to orchestrator)
+4. Monitor via: {{PROJECT_ROOT}}/sessions/context_metrics.json
+5. Configure limits in: {{PROJECT_ROOT}}/.env
+   - MAX_CONTEXT_WINDOW={{TOKEN_LIMIT}}
+   - WARNING_THRESHOLD={{PERCENT}}
+   - MAX_SNIPPETS={{COUNT}}
+```
+
+---
+
+## Directive 4: FAILURE_HANDLING.md
+
+### DIRECTIVE HEADER
+```markdown
+---
+directive_id: FAILURE_HANDLING
+version: 1.0
+enforcement_level: MANDATORY
+applies_to: ALL_AGENTS
+bypass_allowed: false
+validation_checkpoint: ERROR_DETECTION
+---
+```
+
+### WHAT THIS DIRECTIVE DOES
+Makes failure a first-class outcome. Prevents silent errors, enables graceful degradation, maintains system trust.
+
+### ORCHESTRATOR EXECUTION SEQUENCE
+
+**FAILURE DETECTION**
+```
+AGENT MUST detect these failure conditions:
+  
+  FAILURE_TYPE_1: Insufficient Information
+    - KB incomplete
+    - Documentation missing
+    - Context inadequate
+  
+  FAILURE_TYPE_2: Tool Unavailable
+    - MCP server unresponsive
+    - Required tool not declared
+    - Execution timeout
+  
+  FAILURE_TYPE_3: Constraint Violation
+    - Cannot meet requirements
+    - Conflicting instructions
+    - Resource limits exceeded
+  
+  FAILURE_TYPE_4: Validation Failed
+    - Output doesn't meet criteria
+    - Tests failed
+    - Quality threshold not met
+
+ENFORCEMENT:
+  IF agent detects failure:
+    MUST NOT attempt workaround without explicit approval
+    MUST NOT produce partial/incorrect output
+    MUST halt and report
+```
+
+**FAILURE REPORTING**
+```
+WHEN failure detected:
+  
+  REQUIRED_REPORT_FORMAT:
+    {
+      "failure_id": "{{UNIQUE_ID}}",
+      "agent": "{{AGENT_NAME}}",
+      "task": "{{TASK_DESCRIPTION}}",
+      "timestamp": "{{ISO_8601_TIMESTAMP}}",
+      
+      "failure_type": "{{TYPE_FROM_ABOVE}}",
+      
+      "failure_details": {
+        "what_failed": "{{SPECIFIC_FAILURE}}",
+        "at_step": "{{WORKFLOW_STEP}}",
+        "error_message": "{{ERROR_TEXT}}"
+      },
+      
+      "root_cause": "{{ANALYSIS}}",
+      
+      "attempted_recovery": [
+        {
+          "action": "{{WHAT_WAS_TRIED}}",
+          "result": "{{SUCCESS|FAILURE}}"
+        }
+      ],
+      
+      "required_to_proceed": "{{WHAT_IS_NEEDED}}",
+      
+      "severity": "{{low|medium|high|critical}}",
+      
+      "user_action_required": {{true|false}},
+      
+      "safe_to_retry": {{true|false}},
+      
+      "suggested_alternative": "{{FALLBACK_APPROACH|null}}"
+    }
+
+ENFORCEMENT:
+  IF failure report incomplete:
+    Escalate to MetaGPT for investigation
+```
+
+**FAILURE ESCALATION**
+```
+SEVERITY_BASED_ROUTING:
+  
+  LOW_SEVERITY:
+    - Agent logs warning
+    - Continues with degraded functionality
+    - Example: Optional formatting unavailable
+  
+  MEDIUM_SEVERITY:
+    - Agent pauses execution
+    - Reports to MetaGPT
+    - Awaits decision: retry|fallback|user_input
+    - Example: Secondary data source unavailable
+  
+  HIGH_SEVERITY:
+    - Agent halts immediately
+    - Handoff to MetaGPT with full context
+    - User notification required
+    - Example: KB validation failed
+  
+  CRITICAL_SEVERITY:
+    - Entire workflow halts
+    - System state preserved
+    - User intervention mandatory
+    - Example: Data corruption detected
+```
+
+**RECOVERY STRATEGIES**
+```
+STRATEGY_1: Automatic Retry
+  WHEN: Transient failures (network, timeout)
+  MAX_ATTEMPTS: {{RETRY_LIMIT}} (default: 3)
+  BACKOFF: Exponential (1s, 2s, 4s)
+  ENFORCEMENT: Log each attempt
+
+STRATEGY_2: Fallback Mode
+  WHEN: Primary method unavailable
+  REQUIRES: Predefined fallback in {{AGENT_CONFIG}}
+  EXAMPLE: web.search fails → use local cache
+  ENFORCEMENT: Document quality tradeoff
+
+STRATEGY_3: Graceful Degradation
+  WHEN: Non-critical feature unavailable
+  REQUIRES: Core functionality remains intact
+  EXAMPLE: Syntax highlighting off, but code generation works
+  ENFORCEMENT: Inform user of limitations
+
+STRATEGY_4: User Escalation
+  WHEN: No automatic recovery possible
+  REQUIRES: Clear question to user
+  EXAMPLE: "Choose data source: A or B?"
+  ENFORCEMENT: Pause until user responds
+
+STRATEGY_5: Workflow Termination
+  WHEN: Fundamental requirement cannot be met
+  REQUIRES: Preserve all work done so far
+  EXAMPLE: Required API credentials missing
+  ENFORCEMENT: Save state, clean exit
+```
+
+**FAILURE LEARNING**
+```
+AFTER failure resolution:
+  
+  REQUIRED_ACTIONS:
+    - Log to: {{PROJECT_ROOT}}/eval/failure_analysis.md
+    - Include:
+      • What failed
+      • Why it failed
+      • How it was resolved
+      • How to prevent recurrence
+    
+    - Update agent's {{MATURITY_SCORE}}:
+      • Decrease on repeated failures
+      • Increase on successful recovery
+    
+    - Propose KB update:
+      • Add known failure patterns
+      • Document workarounds
+      • Update troubleshooting guides
+
+ENFORCEMENT:
+  Failures without post-mortem analysis are incomplete
+```
+
+**FAILURE PREVENTION**
+```
+PROACTIVE_CHECKS:
+  
+  BEFORE_EXECUTION:
+    - Validate {{REQUIRED_TOOLS}} available
+    - Check {{KB_STATUS}} adequate
+    - Confirm {{USER_INPUT}} complete
+  
+  DURING_EXECUTION:
+    - Monitor {{CONTEXT_BUDGET}}
+    - Track {{EXECUTION_TIME}}
+    - Validate {{INTERMEDIATE_OUTPUTS}}
+  
+  AFTER_EXECUTION:
+    - Run {{VALIDATION_TESTS}}
+    - Check {{OUTPUT_QUALITY}}
+    - Verify {{KB_UPDATES_COMPLETE}}
+```
+
+### TRUST MAINTENANCE
+```
+HONESTY_REQUIREMENTS:
+  
+  AGENT MUST:
+    ✓ Admit when information is unavailable
+    ✓ Report limitations clearly
+    ✓ Never fabricate data to complete task
+    ✓ Distinguish facts from assumptions
+  
+  AGENT MUST NOT:
+    ✗ Silently skip steps
+    ✗ Return partial results as complete
+    ✗ Hide errors
+    ✗ Guess instead of research
+```
+
+### VALIDATION CRITERIA
+```
+Directive is SUCCESSFUL when:
+  ✓ Failures are detected early
+  ✓ Failure reports are actionable
+  ✓ Recovery happens automatically when possible
+  ✓ Users are informed of issues promptly
+  ✓ System learns from failures
+
+Directive FAILED when:
+  ✗ Silent failures occur
+  ✗ Partial/incorrect outputs produced
+  ✗ Same failures repeat without learning
+  ✗ Users discover errors after handoff
+  ✗ Workflow corruption undetected
+```
+
+### DEPLOYMENT INSTRUCTIONS
+```
+1. Save as: {{PROJECT_ROOT}}/directives/FAILURE_HANDLING.md
+2. Reference in: ALL agent {{SYSTEM_INSTRUCTIONS_MD}} files
+3. Enforcement by: {{METAGPT}} error handlers
+4. Log failures to: {{PROJECT_ROOT}}/sessions/failures/{{FAILURE_ID}}.json
+5. Track patterns in: {{PROJECT_ROOT}}/eval/failure_analysis.md
+6. Configure in: {{PROJECT_ROOT}}/.env
+   - RETRY_LIMIT={{COUNT}}
+   - FAILURE_SEVERITY_THRESHOLD={{LEVEL}}
+   - AUTO_RECOVERY_ENABLED={{true|false}}
+```
+
+---
+
+## DEPLOYMENT ORCHESTRATOR CHECKLIST
+
+### Pre-Deployment Validation
+```
+BEFORE deploying file-based agentic workflow:
+
+[ ] {{PROJECT_ROOT}} directory created
+[ ] {{AGENTIC_WORKFLOW_CONTRACT_MD}} in place
+[ ] {{directives/}} folder created
+[ ] All 4 core directives saved:
+    [ ] KB_GUARDRAILS.md
+    [ ] HANDOFF_PROTOCOL.md
+    [ ] PROGRESSIVE_LOADING.md
+    [ ] FAILURE_HANDLING.md
+[ ] {{shared-knowledgebase/}} initialized
+[ ] {{agents/}} folder structure ready
+[ ] MetaGPT has enforcement authority configured
+```
+
+### Configuration Files Required
+```
+CREATE these in {{PROJECT_ROOT}}:
+
+.env (global settings)
+  MAX_CONTEXT_WINDOW={{TOKEN_LIMIT}}
+  RETRY_LIMIT={{COUNT}}
+  KB_FIRST_ENFORCEMENT={{true|false}}
+  LOGGING_LEVEL={{debug|info|warn|error}}
+
+config.json (system settings)
+  {
+    "orchestrator": "{{METAGPT}}",
+    "directive_enforcement": "strict",
+    "progressive_loading": true,
+    "failure_handling": "graceful",
+    "kb_first": true
+  }
+```
+
+### Initialization Sequence
+```
+1. Load AGENTIC_WORKFLOW_CONTRACT.md
+2. Load all directives from directives/
+3. Initialize MetaGPT with enforcement rules
+4. Validate agent definitions exist
+5. Check KB manifest accessible
+6. Confirm MCP tools configured
+7. Start session logging
+8. System ready for agent invocation
+```
+
+### Health Check Commands
+```
+VERIFY system operational:
+
+1. Test KB-first enforcement:
+   - Invoke agent without KB
+   - Expect: Halt with KB insufficiency message
+
+2. Test handoff protocol:
+   - Trigger agent transition
+   - Expect: Handoff contract emission
+
+3. Test progressive loading:
+   - Monitor context size during execution
+   - Expect: Context stays within budget
+
+4. Test failure handling:
+   - Simulate tool unavailability
+   - Expect: Graceful failure report
+```
+
+---
+
+## INTEGRATION INSTRUCTIONS FOR AI/LLM DEPLOYERS
+
+### When Tasked to Deploy This System:
+
+**STEP 1: Scaffold Structure**
+```
+CREATE directory tree:
+  {{PROJECT_ROOT}}/
+    agents/
+    shared-knowledgebase/
+      manifest.md
+      snippets/
+      frameworks/
+    directives/
+      KB_GUARDRAILS.md
+      HANDOFF_PROTOCOL.md
+      PROGRESSIVE_LOADING.md
+      FAILURE_HANDLING.md
+    sessions/
+      workflows/
+    .env
+    AGENTIC_WORKFLOW_CONTRACT.md
+```
+
+**STEP 2: Populate Directives**
+```
+COPY directive content from this template
+REPLACE all {{PLACEHOLDERS}} with:
+  - {{PROJECT_ROOT}} → actual project path
+  - {{METAGPT}} → orchestrator agent name
+  - {{MAX_TOKENS}} → context limit (e.g., 15000)
+  - {{RETRY_LIMIT}} → failure retry count (e.g., 3)
+  - {{MAX_SNIPPETS}} → simultaneous KB snippets (e.g., 3)
+```
+
+**STEP 3: Configure Enforcement**
+```
+IN MetaGPT system instructions:
+  - Add: "Enforce directives/KB_GUARDRAILS.md"
+  - Add: "Enforce directives/HANDOFF_PROTOCOL.md"
+  - Add: "Enforce directives/PROGRESSIVE_LOADING.md"
+  - Add: "Enforce directives/FAILURE_HANDLING.md"
+  - Add: "Reject agent outputs violating contracts"
+```
+
+**STEP 4: Validate Deployment**
+```
+RUN health checks (see above)
+VERIFY all checkpoints operational
+TEST with simple agent invocation
+CONFIRM logging works
+```
+
+---
+
+## SOP TEMPLATE COMPLETE ✅
+
+These 4 directives are:
+- **Self-contained** (no external dependencies)
+- **Enforceable** (clear checkpoints)
+- **Auditable** (logging requirements)
+- **IDE/CLI agnostic** (path placeholders)
+- **AI/LLM ready** (explicit replacement targets)
+
+**Next**: Deploy scaffold and test with MetaGPT.
+

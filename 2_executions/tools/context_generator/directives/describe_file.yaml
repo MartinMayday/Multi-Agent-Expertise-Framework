@@ -1,0 +1,53 @@
+name: describe_file
+version: "1.0"
+description: Generate a brief description for a source file
+
+inputs:
+  - filename: string
+  - language: string
+  - symbols: list[string]
+  - first_lines: string
+  - docstring: string | null
+
+output:
+  type: string
+  max_length: 150
+  format: "Brief phrase or sentence, no markdown"
+
+validation:
+  max_tokens: 60
+  must_not_contain: ["#", "**", "```"]
+  must_be_single_line: true
+  strip_markdown: true
+
+template: |
+  You are a technical documentation assistant writing file descriptions.
+  
+  TASK: Write a brief description (one phrase or sentence) for this source file.
+  
+  FILENAME: {filename}
+  LANGUAGE: {language}
+  KEY SYMBOLS: {symbols}
+  FILE DOCSTRING: {docstring}
+  FIRST LINES:
+  {first_lines}
+  
+  OUTPUT REQUIREMENTS:
+  - Maximum 150 characters
+  - Single line, no markdown
+  - Describe what the file does, not what it contains
+  - Be specific to the actual code
+  
+  CORRECT EXAMPLES:
+  - "HTTP request handlers for user profile endpoints"
+  - "Utility functions for date formatting and timezone conversion"
+  - "Base class for all database models with common fields"
+  - "Configuration loader with environment variable support"
+  
+  WRONG EXAMPLES:
+  - "A Python file" (too vague)
+  - "Contains the User class" (describes contents, not purpose)
+  - "## Utils\n\nThis file..." (uses markdown)
+  - "Helper functions" (not specific)
+  
+  Write ONLY the description, nothing else:

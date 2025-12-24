@@ -1,0 +1,43 @@
+{# CLAUDE.md template for folder context with progressive loading #}
+# {{ folder_name }}
+
+## Purpose
+{{ purpose }}
+
+{% if files and files[0].frontmatter -%}
+## File Metadata (YAML Frontmatter)
+
+{% for file in files -%}
+{% if file.frontmatter -%}
+### {{ file.name }}
+{{ file.frontmatter }}
+{% endif -%}
+{% endfor %}
+{% endif %}
+
+## Files
+| File | Symbols | Tokens | Chunk Type | Keywords | RAGAS | Retrieval | Description |
+|------|---------|--------|------------|----------|-------|-----------|-------------|
+{% for file in files -%}
+| `{{ file.name }}` | {{ file.symbols }} | ~{{ file.tokens }} | {{ file.chunk_type }} | {{ file.keywords|join(', ') if file.keywords else 'N/A' }} | {{ "%.2f"|format(file.ragas_score) if file.ragas_score > 0 else 'N/A' }} | {{ "%.4f"|format(file.retrieval_score) if file.retrieval_score > 0 else 'N/A' }} | {{ file.description }} |
+{% endfor %}
+
+{% if imports -%}
+## Key References
+{% for imp in imports -%}
+- @{{ imp.path }}{% if imp.note %} ({{ imp.note }}){% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if dependencies -%}
+## Dependencies
+{{ dependencies }}
+{% endif %}
+
+{% if notes -%}
+## Notes
+{% for note in notes -%}
+- {{ note }}
+{% endfor %}
+{% endif %}

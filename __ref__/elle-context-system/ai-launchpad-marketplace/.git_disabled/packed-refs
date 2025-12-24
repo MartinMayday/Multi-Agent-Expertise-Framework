@@ -1,0 +1,4 @@
+# pack-refs with: peeled fully-peeled sorted 
+0ec6b9039c964f116f21efc5a48da840585f637f refs/remotes/origin/feat-mcp-launchpad-integration
+2131d0532bdf4e4118d738584f0049e254f6fc3f refs/remotes/origin/feature/context-engineering-plugin
+2c5a773d824a6dbf2f187606de6760c385d78251 refs/remotes/origin/main

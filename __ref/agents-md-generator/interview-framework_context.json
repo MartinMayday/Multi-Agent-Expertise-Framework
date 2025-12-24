@@ -1,0 +1,187 @@
+{
+  "folder_path": "/Volumes/uss/cloudworkspace/0_operator/1_Inbox/taskholder/th_hometown-bmad-fusion/__ref/interview-framework",
+  "folder_name": "interview-framework",
+  "files": [
+    {
+      "name": "Complete-Worked-Example.md",
+      "snippet": "Scenario: Building a real-time task monitoring dashboard for Crew AI agents running in homelab",
+      "keywords": [
+        "classification",
+        "exploration",
+        "conducting",
+        "blueprint",
+        "interview",
+        "adaptive",
+        "complete",
+        "frontend",
+        "example",
+        "handoff"
+      ],
+      "tier": 2,
+      "purpose": "Example file showing correct implementation and usage patterns",
+      "use_when": "Need concrete example, learning the framework, validating approach",
+      "word_count": 4671,
+      "file_type": "example"
+    },
+    {
+      "name": "Interview-Decision-Tree.md",
+      "snippet": "Use this when you're in a time crunch or need to quickly classify a project",
+      "keywords": [
+        "classification",
+        "extraction",
+        "interview",
+        "reference",
+        "decision",
+        "specific",
+        "context",
+        "summary",
+        "domain",
+        "intent"
+      ],
+      "tier": 2,
+      "purpose": "Documentation file: Use this when you're in a time crunch or need to quickly classify a project",
+      "use_when": "Need reference material for specific task or topic",
+      "word_count": 2113,
+      "file_type": "documentation"
+    },
+    {
+      "name": "MASTER-GUIDE.md",
+      "snippet": "Author: Senior IT Architect & Product Developer (10,000+ Successful Launches)  \nDate: 2025-12-23  \nStatus: Production Ready | Enterprise Classification",
+      "keywords": [
+        "engineering",
+        "enterprise",
+        "framework",
+        "interview",
+        "templates",
+        "complete",
+        "received",
+        "context",
+        "handoff",
+        "problem"
+      ],
+      "tier": 2,
+      "purpose": "Detailed guide explaining Author: Senior IT Architect & Product Developer (10,000+ Successful Launches)  \nDate: 2025-12-23  \nS",
+      "use_when": "Need detailed guidance on specific topic, learning the framework",
+      "word_count": 2660,
+      "file_type": "guide"
+    },
+    {
+      "name": "Prompt-Blueprint-Template.md",
+      "snippet": "Generated From: Interview-Driven Framework SOP  \nInterview Conducted: [DATE]  \nStakeholders: [NAMES]  \nStatus: ✅ Ready for Code Generation",
+      "keywords": [
+        "specifications",
+        "blueprint",
+        "execution",
+        "framework",
+        "objective",
+        "audience",
+        "template",
+        "purpose",
+        "agents",
+        "claude"
+      ],
+      "tier": 2,
+      "purpose": "Template file with placeholders for generating new files - provides structure and format",
+      "use_when": "Creating new files based on template, need structure and format",
+      "word_count": 2044,
+      "file_type": "template"
+    },
+    {
+      "name": "Quick-Reference-Cheatsheet.md",
+      "snippet": "Print this",
+      "keywords": [
+        "engineering",
+        "cheatsheet",
+        "checklist",
+        "framework",
+        "interview",
+        "questions",
+        "reference",
+        "variables",
+        "critical",
+        "context"
+      ],
+      "tier": 1,
+      "purpose": "Documentation file: Print this",
+      "use_when": "Ready to execute, need exact steps and commands, troubleshooting guidance",
+      "word_count": 1468,
+      "file_type": "documentation"
+    },
+    {
+      "name": "README.md",
+      "snippet": "Version: 1",
+      "keywords": [
+        "context extraction",
+        "code generation",
+        "getting started",
+        "quick reference",
+        "worked example",
+        "decision tree",
+        "real scenario",
+        "domain paths",
+        "introduction",
+        "cheat sheet"
+      ],
+      "tier": 1,
+      "purpose": "Original research/development notes and context extraction framework",
+      "use_when": "First time using the package, need orientation and understanding of package contents",
+      "word_count": 3370,
+      "file_type": "readme"
+    },
+    {
+      "name": "SOP-Interview-Framework.md",
+      "snippet": "Version: 1",
+      "keywords": [
+        "engineering",
+        "generation",
+        "executive",
+        "framework",
+        "interview",
+        "operating",
+        "procedure",
+        "contents",
+        "overview",
+        "reliable"
+      ],
+      "tier": 2,
+      "purpose": "Standard Operating Procedure with step-by-step instructions and quality gates",
+      "use_when": "Conducting comprehensive process, need full methodology and quality gates",
+      "word_count": 4253,
+      "file_type": "sop"
+    },
+    {
+      "name": "clog_perplexity_interview-context-extraction-framework.md",
+      "snippet": "<img src=\"https://r2cdn",
+      "keywords": [
+        "comprehensive",
+        "placeholders",
+        "successfull",
+        "extraction",
+        "perplexity",
+        "principles",
+        "architect",
+        "determine",
+        "developer",
+        "documents"
+      ],
+      "tier": 3,
+      "purpose": "Example file showing correct implementation and usage patterns",
+      "use_when": "Need concrete example, learning the framework, validating approach",
+      "word_count": 753,
+      "file_type": "example"
+    }
+  ],
+  "key_concepts": [
+    "AI agent",
+    "COMPLETE WORKED EXAMPLE: Handoff to Cursor/Claude-Code",
+    "End-to-End Interview + Blueprint + Handoff Flow",
+    "Interview Session Record",
+    "LLM context management",
+    "PART 1: Conducting the Interview (20 Minutes)",
+    "PART 2: Filling the Interview Record",
+    "Q1: Intent Classification",
+    "Q2: Goal Exploration (Adaptive to Frontend Domain)",
+    "Q3: Obstacles & Constraints"
+  ],
+  "total_files": 8
+}

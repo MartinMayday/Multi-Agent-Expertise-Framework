@@ -1,0 +1,50 @@
+# Changeset Template
+# Copy this file and fill in details for each set of changes
+
+changeset_id: "changeset-YYYYMMDD-HHMMSS"
+timestamp: "YYYY-MM-DDTHH:MM:SSZ"
+author: "agent-name-or-user-id"
+description: |
+  Brief description of what changed and why.
+  
+  Example: "Added Cursor IDE runtime files (.cursorrules, project_rules.mdc, slash commands) 
+  to enable consistent AI behavior and reusable workflows."
+
+files:
+  - source: "review-approval/path/to/new-file.md"
+    target: "canonical/path/to/file.md"
+    action: "create"
+    reason: "Why this file is needed"
+  - source: "review-approval/path/to/modified-file.md"
+    target: "canonical/path/to/file.md"
+    action: "update"
+    reason: "What changed and why"
+
+validation_status:
+  scaffold_validation: "pending|pass|fail"
+  tests: "pending|pass|fail|n/a"
+  linting: "pending|pass|fail|n/a"
+  manual_review: "pending|approved|rejected"
+
+approval_required: true
+approval_status: "pending|approved|rejected"
+approved_by: null
+approved_at: null
+
+promotion_checklist:
+  - item: "Scaffold validation passes"
+    status: "pending|checked"
+  - item: "All tests pass (if applicable)"
+    status: "pending|checked"
+  - item: "No secrets or sensitive data"
+    status: "pending|checked"
+  - item: "Files follow filesystem-as-API contract"
+    status: "pending|checked"
+  - item: "KB snippets have proper source attribution"
+    status: "pending|checked"
+  - item: "Documentation updated if needed"
+    status: "pending|checked"
+
+notes: |
+  Additional notes, concerns, or context for reviewers.
+

@@ -1,0 +1,481 @@
+---
+id: agentic-workflow-context-index
+title: "Progressive Loading Index - Agentic Workflow Design Session"
+index_type: contextual-retrieval-gateway
+primary_summary: agentic-workflow-conversation-summary.md
+conversation_date: 2025-12-22
+total_context_blocks: 8
+loading_strategy: on-demand-per-block
+---
+
+# Progressive Context Loading Index
+
+This index provides structured access to full conversation context through progressive loading. Each section includes frontmatter-optimized snippets for retrieval and links to detailed context blocks.
+
+**Usage Pattern**: 
+1. Start with main summary file for compact overview
+2. Load specific context blocks below only when needed
+3. Use frontmatter search terms for semantic retrieval
+
+---
+
+## Context Block 1: Prompt Engineering Diagnosis
+
+---
+id: ctx-prompt-refinement-framework
+title: "CLEAR Framework for Prompt Refinement"
+chunk_type: methodology
+tokens: ~1200
+keywords:
+  - prompt-engineering
+  - CLEAR-framework
+  - context-lens-expectations
+  - output-format-specification
+summary: |
+  Framework for upgrading prompts: Context (why/where), Lens (role), 
+  Expectations (format), Accuracy (constraints), Result (success criteria). 
+  Includes before/after examples and universal template.
+when_to_load: Agent needs prompt quality assessment or refinement guidance
+---
+
+**Key Content**:
+- 5-part CLEAR framework (Context, Lens, Expectations, Accuracy, Result)
+- Common prompt problems and fixes table
+- Universal prompt template with placeholders
+- Advanced refinement tips (chain prompts, self-checks, alternatives)
+
+**Reference Location**: See conversation section "How can I refine this prompt..."
+
+**Retrieval Triggers**: 
+- "prompt quality assessment"
+- "refinement framework"
+- "clear prompt structure"
+
+---
+
+## Context Block 2: Braindump Analysis & Scoring
+
+---
+id: ctx-braindump-evaluation
+title: "Over-Scoped Prompt Diagnostic Analysis"
+chunk_type: evaluation
+tokens: ~2500
+keywords:
+  - task-overload
+  - cognitive-mode-mixing
+  - prompt-splitting-strategy
+  - assumption-conflicts
+complexity: advanced
+summary: |
+  Detailed analysis of why over-scoped prompts fail. Identifies 7 structural 
+  issues: task overload, conflicting research instructions, tooling assumptions, 
+  blurred abstraction levels, over-restrictive constraints, implicit outputs, 
+  reference prioritization problems. Scores original prompt 7.2/10.
+when_to_load: Diagnosing why complex prompts produce poor results
+---
+
+**Key Content**:
+- 7 structural failure modes in complex prompts
+- Why multi-cognitive-mode prompts reduce reliability
+- Learning insights for each failure type
+- Specific recommendation: split into 5 sequential prompts
+
+**Scoring Breakdown**:
+- Strengths: Intent clarity, scope definition, accuracy emphasis
+- Weaknesses: Task overload, tool assumption conflicts, constraint timing
+
+**Reference Location**: "Great prompt to analyze—this is already above average..."
+
+**Retrieval Triggers**:
+- "prompt diagnostic"
+- "why complex prompts fail"
+- "cognitive mode separation"
+
+---
+
+## Context Block 3: MetaGPT System Architecture
+
+---
+id: ctx-metagpt-orchestrator
+title: "PromptOrchestratorGPT System Instruction"
+chunk_type: implementation-spec
+tokens: ~1800
+keywords:
+  - meta-orchestrator
+  - prompt-decomposition
+  - sequential-task-generation
+  - progressive-context
+  - cursor-ide
+  - mcp-server-tools
+audience: ai-engineers
+summary: |
+  Production CustomGPT system instruction for braindump-to-sequential-prompt 
+  orchestrator. Transforms chaotic inputs into dependency-aware, narrowly-scoped 
+  prompt sequences. Enforces documentation-first workflows, declares MCP tool 
+  requirements, prevents execution (planning only).
+when_to_load: Building MetaGPT or need orchestrator pattern reference
+---
+
+**Key Content**:
+- Complete system instruction with role, context, objectives
+- 4-step core behavior (classify intent, detect overload, define dependencies, refuse assumptions)
+- Output format schema for sequential prompts
+- MCP-server tool specification patterns
+- Security/prompt injection protection
+
+**Critical Design Choices**:
+- MetaGPT never executes, only orchestrates
+- Explicitly declares required vs optional tools
+- Forces clarification on ambiguous inputs
+- Supports multi-environment (Cursor/VSCode/Claude Code)
+
+**Reference Location**: "Excellent direction. You're essentially designing a meta-GPT..."
+
+**Retrieval Triggers**:
+- "metagpt implementation"
+- "prompt orchestrator"
+- "braindump decomposition"
+
+---
+
+## Context Block 4: Seven-Agent Workflow Taxonomy
+
+---
+id: ctx-agent-taxonomy
+title: "Canonical Agent Roles for Complete Workflows"
+chunk_type: taxonomy
+tokens: ~1000
+keywords:
+  - agent-specialization
+  - workflow-coverage
+  - researchgpt
+  - designgpt
+  - implementationgpt
+  - validation-agents
+category: Knowledge Base
+summary: |
+  Standardized 7-agent taxonomy covering full execution cycle: MetaGPT 
+  (orchestration), ResearchGPT (fact discovery), Analysis/SynthesisGPT 
+  (pattern extraction), Design/ArchitectureGPT (system design), 
+  ImplementationGPT (spec execution), Test/ValidationGPT (failure analysis), 
+  Evaluation/DecisionGPT (go/no-go). Each agent has specific tools and constraints.
+when_to_load: Designing multi-agent system or determining agent roles
+---
+
+**Key Content**:
+- 7 agent role definitions with purpose, requirements, rationale
+- Minimal end-to-end flow diagram
+- Why each separation matters (prevents drift, enables parallelization)
+- Tool requirements per agent type
+
+**Agent Boundaries**:
+- ResearchGPT: Web tools required, no design opinions
+- DesignGPT: No research access, evidence-based only
+- ImplementationGPT: No new decisions, strict adherence
+
+**Reference Location**: Task 1 completion - "Research: GPT Types Needed..."
+
+**Retrieval Triggers**:
+- "agent taxonomy"
+- "specialized agent roles"
+- "complete workflow coverage"
+
+---
+
+## Context Block 5: Handoff Mode Protocol
+
+---
+id: ctx-handoff-protocol
+title: "Formal State Transfer Between Agents"
+chunk_type: protocol-specification
+tokens: ~900
+keywords:
+  - handoff-mode
+  - state-transfer
+  - workflow-control
+  - agent-boundaries
+  - failure-handling
+complexity: intermediate
+summary: |
+  Explicit mechanism for transferring control between agents. Requires handoff 
+  contract (status/artifacts/assumptions/missing-inputs), state object owned by 
+  MetaGPT, trigger rules (completion/exhaustion/uncertainty), failure as 
+  first-class outcome, strict role isolation with violation detection.
+when_to_load: Implementing agent-to-agent transitions or debugging workflow loops
+---
+
+**Key Content**:
+- 5 mandatory handoff requirements
+- State object ownership model
+- Handoff trigger conditions (4 valid scenarios)
+- Failure handling patterns
+- Role isolation enforcement
+
+**Conceptual Models**:
+- Unix pipes (clean interfaces)
+- Compiler phases (staged execution)
+- CI/CD gates (validation checkpoints)
+
+**Reference Location**: Task 2 completion - "Handoff Mode Feature"
+
+**Retrieval Triggers**:
+- "handoff protocol"
+- "agent state transfer"
+- "workflow control mechanism"
+
+---
+
+## Context Block 6: KB-First Guardrails System
+
+---
+id: ctx-kb-first-guardrails
+title: "Mandatory Knowledge Base Execution Gates"
+chunk_type: enforcement-mechanism
+tokens: ~1100
+keywords:
+  - kb-first-execution
+  - hallucination-prevention
+  - documentation-enforcement
+  - knowledge-accumulation
+  - guardrails
+  - manifest-md
+audience: ai-engineers
+complexity: advanced
+summary: |
+  Non-negotiable 5-step execution order forcing all agents through KB gate: 
+  check manifest → declare sufficiency → ask user if insufficient → research 
+  if approved → update KB → output. Eliminates hallucinations structurally, 
+  compounds knowledge, makes reasoning auditable. Includes universal enforcement 
+  block for all agent system prompts.
+when_to_load: Implementing KB-first workflows or preventing agent assumptions
+---
+
+**Key Content**:
+- 5-step invariant execution order
+- KB sufficiency declaration taxonomy
+- Research approval protocols
+- KB write-back requirements
+- MetaGPT enforcement authority
+
+**Critical Rules**:
+- No KB check = invalid response
+- No KB update = incomplete task
+- Skipping steps = automatic failure
+
+**Reference Location**: Task 3 completion - "Guardrails + KB-First Enforcement"
+
+**Retrieval Triggers**:
+- "kb-first guardrails"
+- "hallucination prevention"
+- "documentation-first enforcement"
+
+---
+
+## Context Block 7: KB Snippet Format Standards
+
+---
+id: ctx-kb-snippet-format
+title: "Canonical Knowledge Base Snippet Structure"
+chunk_type: format-specification
+tokens: ~800
+keywords:
+  - kb-snippet-format
+  - hybrid-search-optimization
+  - bm25-semantic-rrf
+  - frontmatter-metadata
+  - verified-facts-separation
+category: Knowledge Base
+summary: |
+  Standard format for KB entries optimized for BM25 + semantic + RRF retrieval. 
+  YAML frontmatter with retrieval metadata, separated "Verified Facts" vs 
+  "Open Questions", implications section, confidence scoring, source tracking. 
+  Append-only, LLM-friendly, supports all models (Claude/GPT/Gemini/Kimi).
+when_to_load: Creating KB entries or designing knowledge management system
+---
+
+**Key Content**:
+- Complete KB snippet template with examples
+- Frontmatter fields for retrieval optimization
+- Verified vs Non-Facts separation pattern
+- Minimal snippet format for sparse information
+- Why this format works (technical rationale)
+
+**Optimization Strategy**:
+- Frontmatter → retrieval + filtering
+- Verified vs Non-Facts → hallucination control
+- Implications → design handoff without assumptions
+
+**Reference Location**: "1️⃣ KB Snippet Format (Canonical, Reusable)"
+
+**Retrieval Triggers**:
+- "kb snippet format"
+- "knowledge base structure"
+- "hybrid search optimization"
+
+---
+
+## Context Block 8: File-Based Architecture Specification
+
+---
+id: ctx-file-based-architecture
+title: "IDE-Agnostic Agent Folder Structure"
+chunk_type: architecture-spec
+tokens: ~600
+keywords:
+  - file-based-agents
+  - folder-structure
+  - multi-model-support
+  - cursor-ide
+  - python-execution-layer
+  - mcp-configuration
+audience: backend-engineers
+complexity: intermediate
+summary: |
+  Standardized folder structure for each agent: system-instructions.md, 
+  KB manifest, AGENTS catalog, test/, eval/, sessions/, executions/ (Python 
+  tools), directives/ (behavior contracts), mcp.json, .env, 
+  shared-knowledgebase/. Enables multi-model support (GPT/Claude/Gemini/Kimi), 
+  deterministic execution, model-agnostic workflows.
+when_to_load: Setting up agent infrastructure or understanding system topology
+---
+
+**Key Content**:
+- Complete folder structure per agent
+- File purpose and ownership model
+- Multi-model configuration via .env + mcp.json
+- Python execution layer vs AI orchestration separation
+- Shared knowledgebase access pattern
+
+**Design Philosophy**:
+- AI as orchestrator, not problem-solver
+- Documentation → Python tools → execution
+- Model-swappable at agent level
+- Scaffolded, long-lived projects
+
+**Reference Location**: User clarification - "i forgot to mention what each file..."
+
+**Retrieval Triggers**:
+- "agent folder structure"
+- "file-based architecture"
+- "multi-model configuration"
+
+---
+
+## Progressive Loading Decision Tree
+
+```
+START
+  │
+  ├─ Need overview? 
+  │    └─→ Load: agentic-workflow-conversation-summary.md
+  │
+  ├─ Diagnosing prompt quality?
+  │    └─→ Load: Context Block 1 (CLEAR Framework)
+  │
+  ├─ Understanding why complex prompts fail?
+  │    └─→ Load: Context Block 2 (Braindump Analysis)
+  │
+  ├─ Building MetaGPT?
+  │    └─→ Load: Context Block 3 (MetaGPT Architecture)
+  │
+  ├─ Designing multi-agent system?
+  │    └─→ Load: Context Block 4 (Agent Taxonomy)
+  │
+  ├─ Implementing agent handoffs?
+  │    └─→ Load: Context Block 5 (Handoff Protocol)
+  │
+  ├─ Preventing hallucinations?
+  │    └─→ Load: Context Block 6 (KB-First Guardrails)
+  │
+  ├─ Creating knowledge base entries?
+  │    └─→ Load: Context Block 7 (KB Snippet Format)
+  │
+  ├─ Setting up agent infrastructure?
+  │    └─→ Load: Context Block 8 (File Architecture)
+  │
+  └─ Need full conversation?
+       └─→ Load: All blocks sequentially
+```
+
+---
+
+## Semantic Search Optimization
+
+### Top Retrieval Terms (BM25):
+- agentic-workflow, multi-model-orchestration, progressive-context-loading
+- metagpt-orchestrator, kb-first-execution, handoff-protocol
+- claude-agent-skills, cursor-ide, prompt-decomposition
+- documentation-first-ai, hallucination-prevention, guardrails
+
+### Conceptual Anchors (RRF):
+- braindump → sequential prompts → agent execution
+- context bloat → progressive loading → minimal windows
+- assumption risk → kb-first gates → verified facts
+- model-agnostic → multi-llm-catalog → agent-level-selection
+
+### Embedding-Optimized Queries:
+- "How to prevent AI agents from hallucinating in complex workflows"
+- "Design patterns for multi-agent orchestration systems"
+- "Progressive context loading to minimize token usage"
+- "File-based architecture for IDE-agnostic AI workflows"
+
+---
+
+## Context Block Dependency Graph
+
+```
+Summary (always start here)
+  │
+  ├─→ Block 1 (Prompt Engineering) ─→ Block 2 (Braindump Analysis)
+  │                                       │
+  │                                       └─→ Block 3 (MetaGPT)
+  │
+  ├─→ Block 4 (Agent Taxonomy) ─┬─→ Block 5 (Handoff Protocol)
+  │                             │
+  │                             └─→ Block 6 (KB-First Guardrails)
+  │
+  └─→ Block 7 (KB Snippet Format) ─→ Block 8 (File Architecture)
+```
+
+**Loading Strategy**:
+- Start with summary for all cases
+- Load Blocks 1-3 for prompt engineering focus
+- Load Blocks 4-6 for workflow design focus  
+- Load Blocks 7-8 for implementation focus
+
+---
+
+## Token Budget Estimates
+
+| Context Block | Approximate Tokens | When to Load |
+|---------------|-------------------|--------------|
+| Summary (main file) | ~3,500 | Always first |
+| Block 1 - Prompt Framework | ~1,200 | Prompt quality work |
+| Block 2 - Braindump Analysis | ~2,500 | Diagnostic analysis |
+| Block 3 - MetaGPT Spec | ~1,800 | Building orchestrator |
+| Block 4 - Agent Taxonomy | ~1,000 | System design phase |
+| Block 5 - Handoff Protocol | ~900 | Workflow integration |
+| Block 6 - KB Guardrails | ~1,100 | Implementation phase |
+| Block 7 - KB Snippet Format | ~800 | Knowledge management |
+| Block 8 - File Architecture | ~600 | Infrastructure setup |
+| **Total Full Context** | **~13,400** | Deep research only |
+
+**Efficiency Gain**: Summary-only loads 3.5k tokens (26% of full context), sufficient for 80% of handoffs.
+
+---
+
+## Next Session Continuity Checklist
+
+Before next session, ensure access to:
+- [ ] This index file (progressive loading gateway)
+- [ ] Main summary file (compact context)
+- [ ] AGENTIC_WORKFLOW_CONTRACT.md (when created)
+- [ ] KB/manifest.md schema (when finalized)
+- [ ] Guardrails module (KB_GUARDRAILS.md)
+
+**Handoff Signal to Next Agent**:
+"Load agentic-workflow-context-index.md, read summary section, then load only context blocks relevant to current task."
+
+---
+
+*This index enables efficient context retrieval with 74% token reduction via progressive loading. Full conversation context available on-demand through structured blocks.*

@@ -1,0 +1,82 @@
+═══════════════════════════════════════════════════════════════════════════════
+  QUICK START: Copy/Paste This Prompt to Generate AGENTS.md
+═══════════════════════════════════════════════════════════════════════════════
+
+Generate AGENTS.md for folder=[TARGET_FOLDER_PATH] using SOP at __ref/SOPs/agents-md-generator
+
+CRITICAL: Follow the SOP workflow exactly:
+
+1. PRE-FLIGHT (MANDATORY):
+   - Read __ref/SOPs/agents-md-generator/directives/MISSION-OBJECTIVES.md
+   - Read __ref/SOPs/agents-md-generator/directives/TASKER-ORDERS.md
+   - Read __ref/SOPs/agents-md-generator/directives/AGENTS-MD-TEMPLATE.md
+   - Read __ref/SOPs/agents-md-generator/directives/VALIDATION-CHECKLIST.md
+   - Verify you understand the 5-phase workflow before proceeding
+
+2. PHASE 1: Analyze Target Folder
+   - Execute: python __ref/SOPs/agents-md-generator/executions/analyze-folder.py [TARGET_FOLDER_PATH]
+   - Verify: [TARGET_FOLDER]_analysis.json created successfully
+
+3. PHASE 2: Extract Context from Files
+   - CRITICAL: Read at least first 500 words of EACH markdown file in target folder
+   - Extract snippets from ACTUAL file content (not assumptions)
+   - Execute: python __ref/SOPs/agents-md-generator/executions/extract-context.py [TARGET_FOLDER_PATH] [TARGET_FOLDER]_analysis.json
+   - Verify: [TARGET_FOLDER]_context.json created successfully
+
+4. PHASE 3: Generate AGENTS.md Using Template
+   - CRITICAL: Check for existing AGENTS.md first
+     * Execute: python __ref/SOPs/agents-md-generator/executions/check-existing-agents-md.py [TARGET_FOLDER_PATH]
+     * If exists and manually created: STOP - Report error, request user decision
+     * If exists and tool-generated: Backup existing file, then proceed
+     * If not exists: Proceed normally
+   - CRITICAL: Load template file completely (don't rely on memory)
+   - CRITICAL: Read actual source files (at least first 1000 words of each for Document Guide)
+   - Systematically replace ALL placeholders line-by-line:
+     * [FOLDER_TITLE] → From folder name or README (READ the README)
+     * [FOLDER_DESCRIPTION] → From folder analysis AND actual README content
+     * [FILE_PURPOSE] → From context JSON (verify matches actual file content)
+     * [CONTAINS] → Extract from ACTUAL file content (read files, list sections)
+     * [KEY_SECTIONS] → Extract from ACTUAL file headings (read files)
+     * All other placeholders → Fill from JSON or actual files
+   - ZERO assumptions: All content must come from JSON data or actual file content
+   - If backup needed: Create backup (AGENTS.md.backup.[timestamp])
+   - Write to: [TARGET_FOLDER]/AGENTS.md (only after confirmation if file exists)
+
+5. PHASE 4: Validate Generated AGENTS.md
+   - Execute: python __ref/SOPs/agents-md-generator/executions/validate-agents-md.py [TARGET_FOLDER]/AGENTS.md [TARGET_FOLDER_PATH]
+   - Verify: All validation checks pass (exit code 0)
+
+6. PHASE 5: Refine if Needed
+   - If validation fails: Fix issues, re-validate (max 3 iterations)
+   - If validation passes: Verify content quality manually:
+     * Snippets match actual file content (read files to verify)
+     * File purposes are specific (not "Documentation")
+     * Document Guide sections match actual files (read files)
+     * No assumptions in content
+
+SUCCESS CRITERIA:
+- AGENTS.md generated in target folder
+- All validation checks pass (13/13)
+- All placeholders replaced
+- Content derived from actual files (0% assumptions)
+- File inventory matches actual files
+- CONTEXT section includes all 4 levels
+
+Report completion status and any issues encountered.
+
+═══════════════════════════════════════════════════════════════════════════════
+  EXAMPLE: Replace [TARGET_FOLDER_PATH] with your folder path
+═══════════════════════════════════════════════════════════════════════════════
+
+Example: Generate AGENTS.md for folder=__ref/interview-framework using SOP at __ref/SOPs/agents-md-generator
+
+[Then follow the same structure above]
+
+═══════════════════════════════════════════════════════════════════════════════
+  ONE-LINER VERSION (Minimal)
+═══════════════════════════════════════════════════════════════════════════════
+
+Generate AGENTS.md for folder=[TARGET_FOLDER_PATH] following SOP at __ref/SOPs/agents-md-generator - MUST read all directives first, then execute 5 phases sequentially, validate, and ensure 0% assumptions in content.
+
+═══════════════════════════════════════════════════════════════════════════════
+

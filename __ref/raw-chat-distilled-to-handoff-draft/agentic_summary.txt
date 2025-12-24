@@ -1,0 +1,352 @@
+---
+id: agentic-workflow-braindump-conversation
+title: "File-Based Agentic Workflow System Design Session"
+source_type: conversation-synthesis
+conversation_date: 2025-12-22
+confidence: high
+complexity: advanced
+audience: ai-engineers
+category: Knowledge Base
+keywords:
+  - agentic-workflow
+  - file-based-system
+  - claude-agent-skills
+  - multi-model-orchestration
+  - progressive-context-loading
+  - prompt-engineering
+  - kb-first-execution
+  - cursor-ide
+  - meta-orchestrator
+tags:
+  - agent-orchestration
+  - knowledge-management
+  - prompt-decomposition
+  - guardrails
+rrf_anchors:
+  - "braindump-to-sequential-prompts"
+  - "multi-llm-agent-system"
+  - "documentation-first-ai"
+summary: |
+  Conversation documenting the design of a file-based agentic workflow system 
+  for Cursor IDE. System enables multi-model LLM orchestration (GPT, Claude, 
+  Gemini, Kimi) with progressive context loading, KB-first execution guardrails, 
+  and deterministic agent behavior through documentation and Python execution layers.
+context_snippet: |
+  This conversation establishes architectural patterns for building IDE-agnostic 
+  agentic workflows where AI acts as orchestrator over file-based knowledge and 
+  execution substrates. Core innovation: separating prompt orchestration (MetaGPT) 
+  from execution (specialized agents), enforcing documentation-first constraints, 
+  and using progressive context loading to minimize hallucinations.
+  
+  Key principle: AI reads directives, chooses tools from executions/, pulls from 
+  shared-knowledgebase/, never assumes. System prevents drift through mandatory 
+  KB gates and handoff protocols.
+---
+
+# Agentic Workflow System Design - Conversation Summary
+
+## Executive Summary
+Design session for a file-based agentic workflow system that runs in Cursor IDE with multi-model LLM support. System architecture separates concerns: MetaGPT orchestrates prompt decomposition, specialized agents execute narrow tasks using only documented facts, and Python tools handle deterministic operations. Progressive context loading prevents bloat, KB-first guardrails eliminate hallucinations.
+
+---
+
+## Core Problem Solved
+**Initial Challenge**: User submitted over-scoped "braindump" prompt mixing research, comparison, design, agent specification, and implementation planning across 6-8 cognitive modes simultaneously.
+
+**Root Issues Identified**:
+- Task overload causing shallow responses and hallucinations
+- Conflicting instructions about research capabilities
+- Tool assumptions that models cannot enforce
+- Blurred boundaries between research, design, and implementation
+- Over-restrictive constraints for exploratory phases
+- Implicit rather than explicit output definitions
+
+**Solution Architecture**: Break complex prompts into sequential, single-mode tasks through specialized MetaGPT orchestrator, then execute via role-specific agents with strict KB-first guardrails.
+
+---
+
+## Key Strategic Decisions
+
+### 1. MetaGPT as Orchestrator (Not Executor)
+**Decision**: Create specialized CustomGPT whose sole job is prompt decomposition, not problem-solving.
+
+**Rationale**: 
+- Prevents hallucinations by separating planning from execution
+- Forces clean interfaces between workflow steps
+- Makes failures visible early
+- Mirrors successful compiler-style pipelines
+
+**Implementation**: MetaGPT analyzes braindumps, classifies intent into task categories, detects cognitive mode overload, defines dependencies, and outputs structured prompt sequences.
+
+### 2. Seven Core Agent Roles
+**Decision**: Standardize on 7 agent types for full workflow coverage.
+
+**Agent Catalog**:
+1. **MetaGPT/Orchestrator** - Decomposes braindumps, enforces sequencing
+2. **ResearchGPT** - Documentation-first research only, web tools required
+3. **Analysis/SynthesisGPT** - Pattern extraction, no web access
+4. **Design/ArchitectureGPT** - System design from synthesized facts
+5. **ImplementationGPT** - Strict spec adherence, flags missing inputs
+6. **Test/ValidationGPT** - Adversarial validation, failure mode analysis
+7. **Evaluation/DecisionGPT** - Go/No-Go decisions, handoff coordination
+
+**Rationale**: Separates cognitive modes, prevents design drift, enables parallel execution where possible.
+
+### 3. Handoff Mode Protocol
+**Decision**: Implement formal state transfer mechanism between agents.
+
+**Requirements**:
+- Explicit handoff contract (status, artifacts, assumptions, missing inputs)
+- State object owned by MetaGPT (agents propose, don't mutate)
+- Handoff triggers only on completion, input exhaustion, or uncertainty threshold
+- Failure as first-class outcome
+- Strict role isolation (violations return to MetaGPT)
+
+**Rationale**: Makes workflows auditable, prevents assumption creep, supports debugging.
+
+### 4. KB-First Execution Guardrails
+**Decision**: Force every agent through mandatory knowledge base gate before reasoning.
+
+**Execution Order (Non-Negotiable)**:
+1. Check `KB/manifest.md` + agent-specific KB
+2. Declare KB sufficiency (sufficient/partial/insufficient)
+3. If insufficient → stop and ask user
+4. If approved → research with source tracking
+5. Update KB with new findings
+6. Only then produce task output
+
+**Rationale**: Eliminates hallucinations structurally, builds institutional knowledge, makes reasoning auditable.
+
+### 5. Progressive Context Loading
+**Decision**: Adopt Claude Agent Skills pattern for context management.
+
+**Four Loading Levels**:
+- **L1 - Front Matter**: Always loaded, answers "should I use this?"
+- **L2 - Full Instructions**: On-demand when agent confirms need
+- **L3 - Reference Files**: Selectively loaded when explicitly required
+- **L4 - Source Code**: Execute without loading into context
+
+**Rationale**: Prevents context bloat, reduces costs, maintains focus, scales to large agent catalogs.
+
+### 6. File-Based System Architecture
+**Decision**: Build IDE-agnostic system where AI orchestrates over file-based substrate.
+
+**Core Principle**: AI as deterministic controller, not creative problem-solver.
+
+**Folder Structure Pattern**:
+```
+<agentname>/
+├── <agentname>_system-instructions.md
+├── kb_<agentname>-manifest.md
+├── AGENTS.md
+├── test/
+├── eval/
+├── sessions/
+├── executions/  # Python tools/workflows
+├── directives/  # Behavior contracts
+├── mcp.json
+├── .env
+└── shared-knowledgebase/
+```
+
+**Rationale**: Model-swappable (GPT/Claude/Gemini/Kimi), long-lived projects, auditability, mature via eval hooks.
+
+---
+
+## Critical Frameworks Established
+
+### CustomGPT System Instruction Template
+**PromptOrchestratorGPT** - Production-ready system prompt for MetaGPT with:
+- Task classification taxonomy
+- Dependency detection logic
+- MCP-server tool specification patterns
+- Progressive loading recommendations
+- Security/prompt injection protection
+
+### KB Snippet Format Standard
+Canonical format optimized for hybrid search (BM25 + semantic + RRF):
+- YAML frontmatter with retrieval metadata
+- Separated "Verified Facts" vs "Open Questions"
+- Implications section for design handoff
+- Confidence scoring
+- Source tracking
+
+### Reusable Guardrails Module
+`directives/KB_GUARDRAILS.md` - Drop-in enforcement block:
+- 5-step mandatory execution order
+- KB status declaration requirements
+- Research approval protocols
+- KB write-back obligations
+- Failure handling rules
+
+---
+
+## Technical Specifications
+
+### Multi-Model Support Strategy
+**Model Catalog Options per Agent**:
+- OpenAI: gpt-5.2, gpt-codex-5.2
+- Anthropic: claude-sonnet-4.5, claude-haiku-4.5
+- Google: gemini-pro-3.0, gemini-flash-3.0
+- Moonshot: kimi-k2, kimi-k2-thinking
+- Other premium LLMs as available
+
+**Selection Logic**: Configured per agent via `.env` + `mcp.json`, enabling cost/performance optimization per task type.
+
+### KB Index Structure
+**manifest.md Schema Requirements** (to be detailed):
+- Frontmatter for retrieval optimization
+- Contextual snippet format
+- Link structure to full documentation
+- BM25 keyword optimization
+- Semantic density for embeddings
+- RRF anchor terms for terminology bridges
+
+### MCP-Server Tooling
+**Required Capabilities**:
+- `web.search` - Official documentation discovery
+- `web.scrape` - Structured content extraction
+- `repo.browser` - GitHub repository inspection
+- `file.reader` - Local reference file consumption
+
+**Pattern**: Agents specify tool requirements, don't assume availability.
+
+---
+
+## Next Implementation Steps
+
+### Immediate Actions Required:
+1. **Draft AGENTIC_WORKFLOW_CONTRACT.md** - Define folder/file semantics:
+   - Purpose, read/write permissions, ownership, forbidden actions
+   - Think "filesystem-as-API" not documentation
+
+2. **Create KB/manifest.md Schema** - Index file specification:
+   - Frontmatter standards
+   - Snippet linking protocol
+   - Retrieval optimization rules
+
+3. **Encode Guardrails Module** - Finalize `KB_GUARDRAILS.md`:
+   - Non-negotiable process enforcement
+   - Handoff protocol integration
+   - Failure handling patterns
+
+### Validation Requirements:
+- Test MetaGPT with original braindump prompt
+- Verify agent specialization boundaries
+- Validate KB-first enforcement prevents assumptions
+- Measure context window efficiency vs traditional approaches
+
+---
+
+## Design Principles Codified
+
+### Anti-Patterns Avoided:
+❌ Prompt stuffing (loading all context upfront)  
+❌ Assumption-based responses  
+❌ Mixed cognitive modes in single prompts  
+❌ Tool enforcement without availability verification  
+❌ Implicit handoff boundaries  
+❌ Bloated system prompts  
+
+### Patterns Embraced:
+✅ Progressive context loading  
+✅ Separation of orchestration from execution  
+✅ Documentation-first workflows  
+✅ Explicit failure as valid outcome  
+✅ Role isolation with enforcement  
+✅ Knowledge accumulation over sessions  
+
+---
+
+## Success Metrics Defined
+
+**System is successful when**:
+1. Complex braindumps decompose reliably into executable sequences
+2. Agents never hallucinate due to KB-first gates
+3. Context windows stay minimal via progressive loading
+4. Knowledge base grows and compounds across sessions
+5. Model swapping works transparently per agent
+6. Handoffs are auditable and debuggable
+7. Failures are intentional, not silent
+
+---
+
+## Reference Architecture Influences
+
+**Cited Systems**:
+- Claude Agent Skills (progressive loading pattern)
+- Unix pipes (clean interfaces)
+- Compiler phases (staged execution)
+- CI/CD gates (validation checkpoints)
+- AutoGPT/LangGraph/CrewAI (agent frameworks)
+
+**Cited Methodologies**:
+- First Principles Thinking (breaking assumptions)
+- BM25 + Semantic + RRF Fusion (hybrid retrieval)
+- Contextual Retrieval (Claude SDK documentation)
+- Agile Epic Breakdown (task decomposition)
+
+---
+
+## Open Questions for Next Session
+
+1. **Folder Semantics**: Exact purpose and access rules for each directory type
+2. **Eval Hooks**: Maturity scoring algorithm for execution refinement
+3. **Session Continuity**: How sessions/ folder links to shared context
+4. **Agent Discovery**: How AGENTS.md catalog enables dynamic agent requests
+5. **Python Tool Lifecycle**: How agents request new executions/ when missing
+6. **README.md Structure**: PRD format for project-level documentation
+
+---
+
+## User Input Collection
+
+### Initial Braindump Prompt
+```
+research internet for methods to run 'claude code' with alternative providers 
+e.g openrouter, minimax, moonshot, z.ai, ollama. gather info to 
+research_claude-code_llm-provider-override.md
+
+[Multiple research tasks, comparison requirements, agent design specifications, 
+implementation planning - full prompt omitted for brevity, see conversation index]
+```
+
+### User Intent Clarifications
+- **Task 1 Request**: "Search internet for requirements for ResearchGPT, ImplementationGPT, and minimum 3 other common GPT types"
+- **Task 2 Request**: "Research and share rationale for handoff mode feature"
+- **Task 3 Request**: "Research guardrails forcing KB-first execution across all agents"
+- **Architecture Context**: "File-based agentic workflow in Cursor IDE with multi-LLM catalog, each agent as folder with system-instructions, KB manifest, tests, evals, sessions, executions (Python tools)"
+
+### User Preferences Stated
+- Focus on action over explanation to preserve tokens
+- One task at a time, wait for continuation signal
+- Ensure alignment on intent before proceeding
+- Provide feedback if better methods exist
+
+### Success Criteria Defined by User
+- Two-file output: compact summary + progressive loading index
+- Main context breaks down conversation to essential learning points
+- Index file with frontmatter snippets enables full context retrieval
+- Minimizes context window overload via progressive loading
+- Smarter retrieval through structured metadata
+
+---
+
+## Conversation Metadata
+
+**Session Type**: Architecture design and system specification  
+**Cognitive Modes Used**: Research → Analysis → System Design → Documentation  
+**Artifacts Generated**: 
+- MetaGPT system instruction
+- KB snippet format examples
+- Guardrails enforcement module
+- Agent workflow canonical flow
+- Multi-agent taxonomy
+
+**Key Breakthrough**: Recognition that AI-as-orchestrator over file-based substrate enables deterministic, auditable, model-agnostic workflows.
+
+**Follow-up Required**: AGENTIC_WORKFLOW_CONTRACT.md defining folder semantics before README.md/PRD.txt creation.
+
+---
+
+*This summary enables rapid context transfer to new agents or sessions. For full conversation context, see companion index file with progressive loading references.*

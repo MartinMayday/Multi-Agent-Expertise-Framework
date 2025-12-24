@@ -1,0 +1,49 @@
+name: infer_dependencies
+version: "1.0"
+description: Generate semantic dependency notes from import analysis
+
+inputs:
+  - folder_name: string
+  - folder_purpose: string
+  - depends_on: list[string]
+  - used_by: list[string]
+  - import_examples: list[string]
+
+output:
+  type: string
+  max_length: 300
+  format: "Brief sentences about key dependencies"
+
+validation:
+  max_tokens: 100
+  must_not_contain: ["##", "```"]
+  strip_markdown: false
+
+template: |
+  You are a technical documentation assistant analyzing code dependencies.
+  
+  TASK: Write 1-2 sentences describing the key dependency relationships for this folder. Focus on architectural significance, not just listing imports.
+  
+  FOLDER: {folder_name}
+  FOLDER PURPOSE: {folder_purpose}
+  DEPENDS ON FOLDERS: {depends_on}
+  USED BY FOLDERS: {used_by}
+  EXAMPLE IMPORTS: {import_examples}
+  
+  OUTPUT REQUIREMENTS:
+  - Maximum 300 characters
+  - Focus on architectural relationships
+  - Mention only the most significant dependencies
+  - Explain why dependencies matter, not just that they exist
+  
+  CORRECT EXAMPLES:
+  - "Core module used by all API handlers. Depends on database models for persistence."
+  - "Leaf component with no internal dependents. Consumes shared utilities and config."
+  - "Central orchestrator connecting auth, database, and API layers."
+  
+  WRONG EXAMPLES:
+  - "Imports utils, models, and config." (just lists imports)
+  - "Has many dependencies." (not specific)
+  - "## Dependencies\n\n- utils\n- models" (uses markdown list format)
+  
+  Write ONLY the dependency description, nothing else:
